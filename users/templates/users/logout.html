@@ -1,0 +1,7 @@
+{% extends "all_books/base.html" %}
+{%block content%}
+<h2>you were logged out</h2>
+<small class="text-muted">
+     <a href="{% url 'login' %}">login again</a>
+</small>
+{%endblock content%}

@@ -1,0 +1,18 @@
+{% extends "all_books/base.html" %}
+{%block content%}
+home page for books, library
+{% for post in posts %}
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" href="#">author: {{ post.author }}</a>
+      <small class="text-muted">publisher: {{ post.publisher }}</small>
+    </div>
+    <h2><a class="article-title" href="#">title: {{ post.title }}</a></h2>
+    <p class="article-content">summary: {{ post.summary }}</p>
+  </div>
+</article>
+{% endfor %}
+{%endblock content%}
+
+

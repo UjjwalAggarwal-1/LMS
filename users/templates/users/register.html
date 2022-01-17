@@ -1,0 +1,16 @@
+{% extends "all_books/base.html" %}
+{% load crispy_forms_tags %}
+{%block content%}
+register page for users
+<form method="POST">
+    {% csrf_token %}
+    <fieldset class="form-group">
+        <legend class="border-bottom mb-4">register page <br>for the librarians</legend>
+        {{ form|crispy }}
+    </fieldset>
+    <button class="btn btn-outline-info" type="submit">sign up</button>
+</form>
+<small class="text-muted">
+    already have an account? <a href="{% url 'login' %}">sign in</a>
+</small>
+{%endblock content%}
