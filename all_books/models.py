@@ -12,7 +12,9 @@ class Books(models.Model):
     ISBN = models.IntegerField()
     #location = models.CharField(max_length=20, default='none')
     #displayed_from = models.DateTimeField(default=timezone.now())
+
     availability = models.ForeignKey(User, on_delete=models.CASCADE)
+    #quantity = models.IntegerField()
 
     def __str__(self):
         return self.title
