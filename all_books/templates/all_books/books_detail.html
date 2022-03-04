@@ -1,0 +1,11 @@
+{% extends "all_books/base.html" %}
+{% block content %}
+<h1>{{ object.title }}</h1>
+<p>by {{ object.author }}</p>
+<p>Publisher: {{ object.publisher }}</p>
+<p>ISBN code: {{object.isbn}}</p>
+<p>available quantity: {{object.quantity}}</p>
+<p>{{object.summary}}</p>
+
+
+{% endblock content %}

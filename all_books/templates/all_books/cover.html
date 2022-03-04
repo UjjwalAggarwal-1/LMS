@@ -42,15 +42,19 @@
 <main role="main" class="container">
   <div class="row">
     <div class="col-md-8">
-        <h4>
+        <h5>
             {% if user.is_authenticated %}
+                {% if user.profile.librarian %}
+                <a href="{% url 'librarian_home' %}">you are already logged in, click to continue to main page</a>
+                {% else %}
                 <a href="{% url 'all_books_home' %}">you are already logged in, click to continue to main page</a>
+                {% endif %}
             {%else%}
                 <a href="{% url 'login'%}">would you like to log in and continue to main page</a>
                 <br>
                 <a href="{% url 'all_books_home'%}">would you like to continue to main page without a login</a>
             {%endif%}
-        </h4>
+        </h5>
 
 </main>
 

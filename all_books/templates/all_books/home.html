@@ -5,15 +5,22 @@ home page for books, library
 <article class="media content-section">
   <div class="media-body">
     <div class="article-metadata">
-      <a class="mr-2" href="#">author: {{ book.author }}</a>
+      <a class="mr-2" >author: {{ book.author }}</a>
       <small class="text-muted">publisher: {{ book.publisher }}</small>
-      <small class="text-muted">ISBN: {{ book.ISBN }}</small>
+      <small class="text-muted">ISBN: {{ book.isbn }}</small>
+      <a  class="btn btn-outline-info" href="{% url 'book_request' book.id %}">Issue</a>
     </div>
-    <h2><a class="article-title" href="#">title: {{ book.title }}</a></h2>
+    <h2>
+      {% if user.profile.librarian %}
+        <a class="article-title" href="{% url 'update_book' book.id %}">title: {{ book.title }}</a>
+      {%else%}
+        <a class="article-title" href="{% url 'book_detail' book.id %}">title: {{ book.title }}</a>
+      {%endif%}
+    </h2>
     <p class="article-content">summary: {{ book.summary }}</p>
   </div>
 </article>
 {% endfor %}
+
+
 {%endblock content%}
-
-
