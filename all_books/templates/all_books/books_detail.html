@@ -6,6 +6,7 @@
 <p>ISBN code: {{object.isbn}}</p>
 <p>available quantity: {{object.quantity}}</p>
 <p>{{object.summary}}</p>
+<a  class="btn btn-outline-info" href="{% url 'book_request' object.id %}">Issue</a>
 
 
 {% endblock content %}

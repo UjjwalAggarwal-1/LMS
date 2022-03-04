@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render, redirect
 from .models import Books, Issue2
 from django.views.generic import ListView, DetailView
@@ -74,26 +76,20 @@ class BookUpdateView(UpdateView):
 #         return initial
 
 
-
-
-
 def book_request(request, pk):
     if request.method == 'POST':
-        form = RequestBookForm(request.POST)
+        form = RequestBookForm(request.POST, pk)
         if form.is_valid():
             return_on = form.cleaned_data.get('return_on')
             student_name = request.user.username
-            isbn = form.cleaned_data.get('isbn')
-            book_object = Books.objects.get(isbn=isbn)
+            book_object = Books.objects.get(pk=pk)
             student_object = User.objects.get(username=student_name)
             issue_inst = Issue2(isbn_of_book=book_object, student=student_object, return_on=return_on)
             issue_inst.save()
             messages.success(request, 'book was requested, please wait for approval')
             return redirect('all_books_home')
     else:
-        #obj = all_books.models.Books.objects.get(pk=pk)
-        form = RequestBookForm(initial={'isbn_of_book': pk})
-        print(pk)
+        form = RequestBookForm(initial={'return_on': datetime.date.today()+datetime.timedelta(days=20)})
     return render(request, 'all_books/request_book.html', {'form': form})
 
 
