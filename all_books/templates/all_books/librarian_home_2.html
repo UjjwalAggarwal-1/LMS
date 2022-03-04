@@ -1,0 +1,15 @@
+{% extends "all_books/base.html" %}
+{%block content%}
+{{ object.isbn_of_book }}
+<br>
+{{ object.student }}
+<br>
+{{ object.return_on }}
+<br>
+<br>
+<form method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+<input type="submit" value="Confirm">
+</form>
+{%endblock content%}

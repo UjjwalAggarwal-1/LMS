@@ -125,7 +125,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
-SITE_ID = 4
+SITE_ID = 8
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -144,6 +144,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-LOGIN_REDIRECT_URL = 'all_books_home'
+LOGIN_REDIRECT_URL = 'login_then?'
+
 LOGOUT_REDIRECT_URL = ''
 LOGIN_URL = 'login'

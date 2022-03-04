@@ -11,14 +11,16 @@
       <p class="text-secondary">mobile_num:{{user.profile.mobile_num}}</p>
     </div>
   </div>
-  <form method="POST" enctype="multipart/form-data">
+  <form method="get">
+  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <fieldset class="form-group">
-        <legend class="border-bottom mb-4">Profile Info</legend>
+        <legend class="border-bottom mb-4">Update Profile Info</legend>
         {{ u_form|crispy }}
         {{ p_form|crispy }}
     </fieldset>
     <button class="btn btn-outline-info" type="submit">Update</button>
+</form>
 </form>
 </div>
 {% endblock content%}

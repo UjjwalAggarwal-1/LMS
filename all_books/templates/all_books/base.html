@@ -25,18 +25,24 @@
       <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarToggle">
-        <div class="navbar-nav mr-auto">
-          <a class="nav-item nav-link" href="/all_books">Home</a>
-          <a class="nav-item nav-link" href="/all_books/about">About</a>
+          <div class="navbar-nav mr-auto">
+              {% if user.profile.librarian %}
+                <a class="nav-item nav-link" href="/librarian_home">Home</a>
+              {% else %}
+                <a class="nav-item nav-link" href="/all_books">Home</a>
+              {% endif %}
+            <a class="nav-item nav-link" href="/all_books/about">About</a>
         </div>
         <!-- Navbar Right Side -->
         <div class="navbar-nav">
             {% if user.is_authenticated %}
+                          {% if not user.profile.librarian %}
+                <a class="nav-item nav-link" href="{% url 'issue_requests' %}">Issue Requests</a>
+                            {% endif %}
                 <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
                 <a class="nav-item nav-link" href="{% url 'user_profile' %}">Profile</a>
             {% else %}
               <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-              <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
             {% endif %}
         </div>
       </div>
@@ -46,7 +52,7 @@
 
 {% if messages %}
     {% for message in messages %}
-        {{ message }}
+<div class="alert alert-{{ message.tags }}">{{ message }}</div>
     {% endfor %}
 {% endif %}
 
