@@ -13,7 +13,7 @@ class RequestBookForm(forms.Form):
     now = datetime.date.today()
     return_on = forms.DateTimeField(widget=forms.SelectDateWidget(attrs={'min': now,
                                                                          'max': now + datetime.timedelta(days=20)}))
-    isbn = forms.CharField(max_length=20)
+    #isbn = forms.CharField(max_length=20)
 
 
 class AddBookForm(forms.ModelForm):

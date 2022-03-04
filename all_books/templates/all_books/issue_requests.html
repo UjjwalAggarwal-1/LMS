@@ -2,30 +2,42 @@
 {%block content%}
 
 <h2>Requests made by You</h2>
-    <div class="col-md-16">
-          <ul class="list-group">
-            {% for issue_request in issue_requests_student %}
-              <article class="full content-section">
-              <div>book: {{ issue_request.isbn_of_book }}</div>
-            {% if issue_request.issue_request_status %}
-            <li class="list-group-item list-group-item-light">Approved</li>
-                            <div>return date: {{ issue_request.return_on }}</div>
-            <br>
-          {% endif %}
-          {% if not issue_request.issue_request_status %}
-              {% if issue_request.reject_request == NULL %}
-            <li class="list-group-item list-group-item-light">Pending</li>
-              {% else %}
-              <br>
-              rejected with note: <br>
-                <li class="list-group-item list-group-item-light">{{ issue_request.reject_request }}</li>
-              <br>
-              {% endif %}
-          {% endif %}
-            </article>
-          {% endfor %}
-          </ul>
-
-
+<div class="row">
+{% for issue_request in issue_requests_student %}
+{% if issue_request.issue_request_status %}
+<div class="col-md-6">
+  <ul class="list-group">
+      <article class="full content-section">
+          <div>book: {{ issue_request.isbn_of_book }}</div>
+          <li class="list-group-item list-group-item-light">Approved</li>
+          <div>return date: {{ issue_request.return_on }}</div>
+          <br>
+    </article>
+  </ul>
     </div>
+{% endif %}
+{% endfor %}
+
+
+{% for issue_request in issue_requests_student %}
+{% if not issue_request.issue_request_status %}
+<div class="col-md-6">
+    <ul class="list-group">
+      <article class="full content-section">
+          <div>book: {{ issue_request.isbn_of_book }}</div>
+      {% if issue_request.reject_request == NULL %}
+    <li class="list-group-item list-group-item-light">Pending</li>
+      {% else %}
+      <br>
+      rejected with note: <br>
+        <li class="list-group-item list-group-item-light">{{ issue_request.reject_request }}</li>
+      <br>
+      {% endif %}
+      </article>
+  </ul>
+</div>
+{% endif %}
+{% endfor %}
+</div>
+
 {% endblock content %}

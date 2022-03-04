@@ -8,7 +8,11 @@ home page for books, library
       <a class="mr-2" >author: {{ book.author }}</a>
       <small class="text-muted">publisher: {{ book.publisher }}</small>
       <small class="text-muted">ISBN: {{ book.isbn }}</small>
-      <a  class="btn btn-outline-info" href="{% url 'book_request' book.id %}">Issue</a>
+      {% if not user.profile.librarian %}
+      <a href="{% url 'book_request' book.id %}">Issue</a>
+      {%else%}
+      <a href="{% url 'update_book' book.id %}">Update</a>
+      {% endif %}
     </div>
     <h2>
       {% if user.profile.librarian %}
