@@ -1,11 +1,13 @@
 import datetime
 
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+
 from .models import Books, Issue2
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, CreateView
 from django.contrib import messages
-from .forms import AddBookForm, RequestDecisionForm, RequestBookForm
+from .forms import AddBookForm, RequestDecisionForm, RequestBookForm, ReturnBookForm
 from django.contrib.auth.models import User
 
 
@@ -62,6 +64,7 @@ class BookUpdateView(UpdateView):
     model = Books
     fields = ['isbn', 'title', 'quantity']
     template_name = 'all_books/update_book.html'
+    success_url = reverse_lazy('librarian_home')
 
 
 # class BookRequest(CreateView):
@@ -139,3 +142,28 @@ def issue_request_detailview(request, issue_request_id):
 
 def cover(request):
     return render(request, 'all_books/cover.html', {'title': 'cover_page'})
+
+
+# class ReturnBook(UpdateView):
+#     model = Issue2
+#     fields = ["issue_request_status"]
+#     template_name = 'all_books/return_book.html'
+#     success_url = reverse_lazy('issue_requests')
+
+
+def return_book(request, pk):
+    if request.method == 'POST':
+        form = ReturnBookForm(request.POST, pk)
+        if form.is_valid():
+            issue_req_stat = form.cleaned_data.get('issue_request_status')
+            old_obj = Issue2.objects.get(pk=pk)
+            old_obj.issue_request_status = issue_req_stat
+            old_obj.save()
+            if not issue_req_stat:
+                book = old_obj.isbn_of_book
+                book.quantity += 1
+                book.save()
+            return redirect('issue_requests')
+    else:
+        form = ReturnBookForm()
+    return render(request, 'all_books/return_book.html', {'form': form})
