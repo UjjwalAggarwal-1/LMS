@@ -1,5 +1,6 @@
 import datetime
 
+from django import forms
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 
@@ -123,15 +124,20 @@ def issue_request_detailview(request, issue_request_id):
         if form.is_valid():
             issue_req_stat = form.cleaned_data.get('issue_request_status')
             reject_request_data = form.cleaned_data.get('reject_request')
-            old_obj = Issue2.objects.get(id=issue_request_id)
-            old_obj.issue_request_status = issue_req_stat
-            old_obj.reject_request = reject_request_data
-            old_obj.save()
-            if issue_req_stat:
-                book = old_obj.isbn_of_book
-                book.quantity -= 1
-                book.save()
-            return redirect('librarian_home')
+            if (issue_req_stat and reject_request_data) or not(issue_req_stat and reject_request_data):
+                raise forms.ValidationError(
+                    "Please fill either reject reason or issue request status, but not both"
+                )
+            else:
+                old_obj = Issue2.objects.get(id=issue_request_id)
+                old_obj.issue_request_status = issue_req_stat
+                old_obj.reject_request = reject_request_data
+                old_obj.save()
+                if issue_req_stat:
+                    book = old_obj.isbn_of_book
+                    book.quantity -= 1
+                    book.save()
+                return redirect('librarian_home')
     else:
         form = RequestDecisionForm()
 
@@ -157,9 +163,9 @@ def return_book(request, pk):
         if form.is_valid():
             issue_req_stat = form.cleaned_data.get('issue_request_status')
             old_obj = Issue2.objects.get(pk=pk)
-            old_obj.issue_request_status = issue_req_stat
-            old_obj.save()
             if not issue_req_stat:
+                old_obj.issue_request_status = issue_req_stat
+                old_obj.save()
                 book = old_obj.isbn_of_book
                 book.quantity += 1
                 book.save()
