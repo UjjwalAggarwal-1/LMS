@@ -10,7 +10,9 @@
       <article class="full content-section">
           <div>book: {{ issue_request.isbn_of_book }}</div>
           <li class="list-group-item list-group-item-light">Approved</li>
-          <div>return date: {{ issue_request.return_on }}</div>
+          <a href="{% url 'return_book' issue_request.id %}">
+            <div>return date: {{ issue_request.return_on }}</div>
+          </a>
           <br>
     </article>
   </ul>
