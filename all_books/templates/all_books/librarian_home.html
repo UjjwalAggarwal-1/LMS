@@ -9,7 +9,7 @@
 <br>
 <br>
 {% for issue_request in issue_requests %}
-{% if not issue_request.issue_request_status and issue_request.reject_request == NULL %}
+{% if issue_request.issue_request_status == 'pending' %}
 <article class="media content-section">
   <div class="media-body">
     <div class="article-metadata">
