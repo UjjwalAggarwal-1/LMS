@@ -32,6 +32,6 @@ class Issue2(models.Model):
     return_on = models.DateTimeField(null=True, default=datetime.date.today()+datetime.timedelta(days=20))
     #issue_request_status = models.BooleanField(default=False, null=True)
     issue_request_status = models.CharField(max_length=10, choices=[
-        ("1", 'keep issued'), ("", 'return')
-    ], default="", null=True, blank=True)
+        ("pending", 'Pending'), ('issued', 'Issued'), ('returned', 'Returned')
+    ], default='pending', null=True, blank=True)
     reject_request = models.CharField(max_length=300, null=True, blank=True)

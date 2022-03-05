@@ -43,41 +43,11 @@ def librarian_home(request):
     return render(request, 'all_books/librarian_home.html')
 
 
-# def update_book(request):
-#     if request.method == "POST":
-#         form = UpdateBookForm(request.POST)#, initial={'title': instance.title})
-#         if form.is_valid():
-#             title = form.cleaned_data.get('title')
-#             quantity = form.cleaned_data.get('quantity')
-#             isbn = form.cleaned_data.get('isbn')
-#             obj = all_books.models.Books.objects.get(isbn=isbn)
-#             obj.title = title
-#             obj.quantity = quantity
-#             obj.save()
-#             messages.success(request, 'updated successfully')
-#             return redirect('librarian_home')
-#     else:
-#         form = UpdateBookForm()
-#         return render(request, 'all_books/update_book.html', {'form': form})
-
-
 class BookUpdateView(UpdateView):
     model = Books
     fields = ['isbn', 'title', 'quantity']
     template_name = 'all_books/update_book.html'
     success_url = reverse_lazy('librarian_home')
-
-
-# class BookRequest(CreateView):
-#     model = Issue2
-#     fields = ['isbn_of_book', 'return_on']
-#     template_name = 'all_books/request_book.html'
-#
-#     def get_initial(self, *args, **kwargs):
-#         initial = super(BookRequest, self).get_initial(**kwargs)
-#         #initial['isbn_of_book'] = Issue2.objects.get(id=self.request)
-#         initial['student_id'] = self.request.user.username
-#         return initial
 
 
 def book_request(request, pk):
@@ -101,7 +71,6 @@ class IssueRequestListView(ListView):  # personal requests of the student!
     model = Issue2
     template_name = 'all_books/issue_requests.html'
     context_object_name = 'issue_requests_student'
-    ordering = ['return_on']
 
 
 def issue_request_listview(request):       # librarians page for viewing requests
@@ -124,16 +93,14 @@ def issue_request_detailview(request, issue_request_id):
         if form.is_valid():
             issue_req_stat = form.cleaned_data.get('issue_request_status')
             reject_request_data = form.cleaned_data.get('reject_request')
-            if (issue_req_stat and reject_request_data) or not(issue_req_stat and reject_request_data):
-                raise forms.ValidationError(
-                    "Please fill either reject reason or issue request status, but not both"
-                )
+            if (issue_req_stat=='issued' and not reject_request_data=='') or (issue_req_stat=='pending' and reject_request_data==''):
+                raise forms.ValidationError("Please fill either reject reason or issue request status, but not both")
             else:
                 old_obj = Issue2.objects.get(id=issue_request_id)
                 old_obj.issue_request_status = issue_req_stat
                 old_obj.reject_request = reject_request_data
                 old_obj.save()
-                if issue_req_stat:
+                if issue_req_stat == 'issued':
                     book = old_obj.isbn_of_book
                     book.quantity -= 1
                     book.save()
@@ -150,20 +117,13 @@ def cover(request):
     return render(request, 'all_books/cover.html', {'title': 'cover_page'})
 
 
-# class ReturnBook(UpdateView):
-#     model = Issue2
-#     fields = ["issue_request_status"]
-#     template_name = 'all_books/return_book.html'
-#     success_url = reverse_lazy('issue_requests')
-
-
 def return_book(request, pk):
     if request.method == 'POST':
         form = ReturnBookForm(request.POST, pk)
         if form.is_valid():
             issue_req_stat = form.cleaned_data.get('issue_request_status')
             old_obj = Issue2.objects.get(pk=pk)
-            if not issue_req_stat:
+            if issue_req_stat == 'returned':
                 old_obj.issue_request_status = issue_req_stat
                 old_obj.save()
                 book = old_obj.isbn_of_book

@@ -4,42 +4,48 @@
 <h2>Requests made by You</h2>
 <div class="row">
 {% for issue_request in issue_requests_student %}
-{% if issue_request.issue_request_status %}
+{% if issue_request.issue_request_status == 'issued' %}
 <div class="col-md-6">
   <ul class="list-group">
       <article class="full content-section">
           <div>book: {{ issue_request.isbn_of_book }}</div>
           <li class="list-group-item list-group-item-light">Approved</li>
+          return date: {{ issue_request.return_on }}
           <a href="{% url 'return_book' issue_request.id %}">
-            <div>return date: {{ issue_request.return_on }}</div>
+            return
           </a>
-          <br>
     </article>
   </ul>
     </div>
 {% endif %}
 {% endfor %}
 
-
 {% for issue_request in issue_requests_student %}
-{% if not issue_request.issue_request_status %}
+{% if issue_request.issue_request_status == 'pending' %}
 <div class="col-md-6">
     <ul class="list-group">
       <article class="full content-section">
           <div>book: {{ issue_request.isbn_of_book }}</div>
-      {% if issue_request.reject_request == NULL %}
     <li class="list-group-item list-group-item-light">Pending</li>
-      {% else %}
-      <br>
-      rejected with note: <br>
-        <li class="list-group-item list-group-item-light">{{ issue_request.reject_request }}</li>
-      <br>
-      {% endif %}
       </article>
   </ul>
 </div>
 {% endif %}
 {% endfor %}
-</div>
 
+
+{% for issue_request in issue_requests_student %}
+{% if issue_request.issue_request_status == 'pending' and not issue_request.reject_reason == 'None' %}
+<div class="col-md-6">
+<ul class="list-group">
+  <article class="full content-section">
+<div>book: {{ issue_request.isbn_of_book }}</div>
+rejected with note: <br>
+        <li class="list-group-item list-group-item-light">{{ issue_request.reject_request }}</li>
+      <br>  </article>
+  </ul>
+</div>
+{%endif%}
+{%endfor%}
+</div>
 {% endblock content %}

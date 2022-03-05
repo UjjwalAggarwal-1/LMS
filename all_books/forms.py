@@ -22,12 +22,12 @@ class AddBookForm(forms.ModelForm):
 
 
 class RequestDecisionForm(forms.Form):
-    issue_request_status = forms.BooleanField(required=False)
+    issue_request_status = forms.ChoiceField(choices=[
+         ('issued', 'Approve request'), ('pending', 'Reject')
+    ], required=False)
     reject_request = forms.CharField(max_length=300, required=False)
 
 
-class ReturnBookForm(forms.ModelForm):
-    class Meta:
-        model = Issue2
-        fields = ['issue_request_status']
+class ReturnBookForm(forms.Form):
+    issue_request_status = forms.ChoiceField(choices=[('returned', 'Return')])
 
