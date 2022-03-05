@@ -30,6 +30,6 @@ class ReturnBookForm(forms.ModelForm):
     class Meta:
         model = Issue2
         fields = ['issue_request_status']
-        widgets = {'issue_reqeust_status': forms.Select(choices=[('ISSUED', 'YES'), ('NO', 'RETURNED'), ('UNKNOWN', 'UNKNOWN')])}
+        widgets = {'issue_reqeust_status': forms.ChoiceField(choices=(('ISSUED', 'YES'), ('NO', 'RETURNED'), ('UNKNOWN', 'UNKNOWN')))}
 
 
