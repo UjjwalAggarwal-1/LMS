@@ -5,8 +5,8 @@
 
 <br><h4>Issued</h4> <br>
 <div class="row">
-    {% for issue_request in issue_requests_student %}
-    {% if issue_request.issue_request_status == 'issued' %}
+{% for issue_request in issue_requests_student %}
+{% if issue_request.issue_request_status == 'issued' %}
 <div class="col-md-6">
   <ul class="list-group">
       <article class="full content-section">

@@ -29,7 +29,7 @@ class Books(models.Model):
 class Issue2(models.Model):
     isbn_of_book = models.ForeignKey(Books, on_delete=models.CASCADE)
     student = models.ForeignKey(User, on_delete=models.CASCADE)
-    return_on = models.DateTimeField(null=True, default=datetime.date.today()+datetime.timedelta(days=20))
+    return_on = models.DateField(null=True, default=datetime.date.today()+datetime.timedelta(days=20))
     #issue_request_status = models.BooleanField(default=False, null=True)
     issue_request_status = models.CharField(max_length=10, choices=[
         ("pending", 'Pending'), ('issued', 'Issued'), ('returned', 'Returned'), ('rejected', 'Rejected')
