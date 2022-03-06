@@ -93,7 +93,7 @@ def issue_request_detailview(request, issue_request_id):
         if form.is_valid():
             issue_req_stat = form.cleaned_data.get('issue_request_status')
             reject_request_data = form.cleaned_data.get('reject_request')
-            if (issue_req_stat=='issued' and not reject_request_data=='') or (issue_req_stat=='pending' and reject_request_data==''):
+            if (issue_req_stat=='issued' and not reject_request_data=='') or (issue_req_stat=='rejected' and reject_request_data==''):
                 raise forms.ValidationError("Please fill either reject reason or issue request status, but not both")
             else:
                 old_obj = Issue2.objects.get(id=issue_request_id)

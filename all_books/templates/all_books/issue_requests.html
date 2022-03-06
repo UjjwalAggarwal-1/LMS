@@ -2,9 +2,11 @@
 {%block content%}
 
 <h2>Requests made by You</h2>
+
+<br><h4>Issued</h4> <br>
 <div class="row">
-{% for issue_request in issue_requests_student %}
-{% if issue_request.issue_request_status == 'issued' %}
+    {% for issue_request in issue_requests_student %}
+    {% if issue_request.issue_request_status == 'issued' %}
 <div class="col-md-6">
   <ul class="list-group">
       <article class="full content-section">
@@ -19,7 +21,10 @@
     </div>
 {% endif %}
 {% endfor %}
+</div>
 
+<br><br><h4>Pending</h4> <br>
+<div class="row">
 {% for issue_request in issue_requests_student %}
 {% if issue_request.issue_request_status == 'pending' %}
 <div class="col-md-6">
@@ -32,20 +37,37 @@
 </div>
 {% endif %}
 {% endfor %}
+</div>
 
-
+<br><br><h4>Rejected</h4> <br>
+<div class="row">
 {% for issue_request in issue_requests_student %}
-{% if issue_request.issue_request_status == 'pending' and not issue_request.reject_reason == 'None' %}
+{% if issue_request.issue_request_status == 'rejected' %}
 <div class="col-md-6">
 <ul class="list-group">
-  <article class="full content-section">
+<article class="full content-section">
 <div>book: {{ issue_request.isbn_of_book }}</div>
 rejected with note: <br>
-        <li class="list-group-item list-group-item-light">{{ issue_request.reject_request }}</li>
-      <br>  </article>
-  </ul>
+<li class="list-group-item list-group-item-light">{{ issue_request.reject_request }}</li><br>  </article>
+</ul>
 </div>
 {%endif%}
 {%endfor%}
+</div>
+
+<br><br><h4>Returned</h4> <br>
+<div class="row">
+{% for issue_request in issue_requests_student %}
+{% if issue_request.issue_request_status == 'returned' %}
+<div class="col-md-6">
+<ul class="list-group">
+<article class="full content-section">
+<div>book: {{ issue_request.isbn_of_book }}</div>
+</article>
+</ul>
+</div>
+{%endif%}
+{%endfor%}
+
 </div>
 {% endblock content %}
