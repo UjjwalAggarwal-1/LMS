@@ -37,7 +37,7 @@
         <div class="navbar-nav">
             {% if user.is_authenticated %}
                           {% if not user.profile.librarian %}
-                <a class="nav-item nav-link" href="{% url 'issue_requests' %}">Issue Requests</a>
+                <a class="nav-item nav-link" href="{% url 'issue_requests_student' %}">Issue Requests</a>
                             {% endif %}
                 <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
                 <a class="nav-item nav-link" href="{% url 'user_profile' %}">Profile</a>
