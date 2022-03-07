@@ -1,4 +1,6 @@
 {% extends "all_books/base.html" %}
+     {% if user.is_authenticated %}
+
 {%block content%}
 {% load crispy_forms_tags %}
 
@@ -19,3 +21,6 @@
 <input class="btn btn-outline-info" type="submit" value="Confirm">
 </form>
 {%endblock content%}
+{% else %}
+    PLEASE LOG IN TO CONTINUE
+{% endif %}

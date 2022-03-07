@@ -1,11 +1,13 @@
 {% extends "all_books/base.html" %}
+{% if user.is_authenticated %}
+
 {%block content%}
 <br>
 <h4>home page for books, library</h4>
 <br>
-  <a href="{% url 'add_book' %}" > ADD BOOK </a>
-  <br>
-  <a href="{% url 'all_books_home' %}" > VIEW ALL BOOKS</a>
+<a href="{% url 'add_book' %}" > ADD BOOK </a>
+<br>
+<a href="{% url 'all_books_home' %}" > VIEW ALL BOOKS</a>
 <br>
 <br>
 {% for issue_request in all_issue_requests %}
@@ -26,3 +28,6 @@
 
 
 {%endblock content%}
+{% else %}
+PLEASE LOG IN TO CONTINUE
+{% endif %}

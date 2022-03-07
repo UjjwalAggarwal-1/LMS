@@ -7,12 +7,11 @@ class Book(models.Model):
     title = models.CharField(max_length=100, default='none')
     author = models.CharField(max_length=50, default='none')
     publisher = models.CharField(max_length=50, default='none')
-    #genre = models.CharField(max_length=20, default='none')
+    genre = models.CharField(max_length=20, default='un-classified')
     summary = models.CharField(max_length=500, default='none')
     isbn = models.CharField(max_length=20)
-    #location = models.CharField(max_length=20, default='none')
-    displayed_from = models.DateTimeField(blank=True, null=True, default=datetime.date.today)
-
+    location = models.CharField(max_length=20, default='unknown')
+    displayed_from = models.DateTimeField(blank=True, null=True, default=datetime.datetime.now())
     availability = models.ManyToManyField(User, through='Issue')
     quantity = models.IntegerField()
 

@@ -1,4 +1,5 @@
 {% extends "all_books/base.html" %}
+     {% if user.is_authenticated %}
 {%block content%}
 home page for books, library
 {% for book in books %}
@@ -8,11 +9,19 @@ home page for books, library
       <a class="mr-2" >author: {{ book.author }}</a>
       <small class="text-muted">publisher: {{ book.publisher }}</small>
       <small class="text-muted">ISBN: {{ book.isbn }}</small>
+
+      {% if book.quantity == 0 %}
+      <small class="text-muted">[[no copy available]]</small>
+      {% endif %}
+      {% if user.is_authenticated %}
       {% if not user.profile.librarian %}
       <a href="{% url 'book_request' book.id %}">Issue</a>
-      {%else%}
+      {% endif %}
+      {%if user.profile.librarian%}
       <a href="{% url 'update_book' book.id %}">Update</a>
       {% endif %}
+      {% endif %}
+
     </div>
     <h2>
       {% if user.profile.librarian %}
@@ -26,5 +35,7 @@ home page for books, library
 </article>
 {% endfor %}
 
-
 {%endblock content%}
+{% else %}
+            PLEASE LOG IN TO CONTINUE
+        {% endif %}
