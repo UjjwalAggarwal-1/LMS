@@ -13,7 +13,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
     path('accounts/', include('allauth.urls')),
     path('', cover, name='cover'),
-    path('profile/', users_views.profile, name='user_profile'),
+    path('student_profile/', users_views.student_profile, name='student_profile'),
+    path('librarian_profile/', users_views.librarian_profile, name='librarian_profile'),
     path('librarian_home/', issue_request_listview, name='librarian_home'),
     path('librarian_home/<int:issue_request_id>/', issue_request_detailview, name='librarian_home_2'),
     path('add_book/', add_book, name='add_book')
