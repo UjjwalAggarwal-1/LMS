@@ -10,8 +10,26 @@
 <a href="{% url 'all_books_home' %}" > VIEW ALL BOOKS</a>
 <br>
 <br>
+<h4>New Requests</h4>
 {% for issue_request in all_issue_requests %}
 {% if issue_request.issue_request_status == 'pending' %}
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <p>book name: {{ issue_request.isbn_of_book }}</p>
+      <p>student name: {{ issue_request.student }}</p>
+    </div>
+    <a href="{% url 'librarian_home_2' issue_request.id %}" >
+    <p class="article-content">return date: {{ issue_request.return_on }}</p>
+  </a>
+  </div>
+</article>
+{% endif %}
+{% endfor %}
+<br><hr>
+<h4>Renewal Requests</h4>
+{% for issue_request in all_issue_requests %}
+{% if issue_request.issue_request_status == 'renewed' %}
 <article class="media content-section">
   <div class="media-body">
     <div class="article-metadata">

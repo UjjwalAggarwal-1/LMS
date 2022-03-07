@@ -4,15 +4,20 @@
 {%block content%}
 {% load crispy_forms_tags %}
 
-<h4>{provide reject reason if rejecting, otherwise leave blank} </h4>
+<h5>{provide reject reason if rejecting, otherwise leave blank} </h5>
 <br>
 <br>
 
-{{ object.isbn_of_book }}
+{{ object.isbn_of_book }}, {{ object.isbn_of_book.quantity }} copies left
 <br>
-{{ object.student }}
+requested by: {{ object.student }}
 <br>
-{{ object.return_on }}
+requested till: {{ object.return_on }} <br>
+    {% if object.issue_request_status == "renewed" %}
+        was previously issued on {{ object.issued_on }}
+    {% endif %}
+
+
 <br>
 <br>
 <form method="post">

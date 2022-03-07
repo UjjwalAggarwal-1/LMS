@@ -15,7 +15,9 @@ home page for books, library
       {% endif %}
       {% if user.is_authenticated %}
       {% if not user.profile.librarian %}
+      {% if book.quantity > 0 %}
       <a href="{% url 'book_request' book.id %}">Issue</a>
+      {% endif %}
       {% endif %}
       {%if user.profile.librarian%}
       <a href="{% url 'update_book' book.id %}">Update</a>
