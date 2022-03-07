@@ -1,4 +1,6 @@
 {% extends "all_books/base.html" %}
+     {% if user.is_authenticated %}
+
 {% load crispy_forms_tags %}
 {% block content %}
 <form method="post">
@@ -8,3 +10,6 @@
 </form>
 
 {% endblock content %}
+{% else %}
+            PLEASE LOG IN TO CONTINUE
+        {% endif %}

@@ -1,4 +1,5 @@
 {% extends "all_books/base.html" %}
+     {% if user.is_authenticated %}
 {%block content%}
 
 <h2>Requests made by You</h2>
@@ -71,3 +72,6 @@ rejected with note: <br>
 
 </div>
 {% endblock content %}
+{% else %}
+            PLEASE LOG IN TO CONTINUE
+        {% endif %}

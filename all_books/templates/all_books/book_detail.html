@@ -1,12 +1,24 @@
 {% extends "all_books/base.html" %}
+{% if user.is_authenticated %}
 {% block content %}
+
 <h1>{{ object.title }}</h1>
+<hr> <br>
 <p>by {{ object.author }}</p>
 <p>Publisher: {{ object.publisher }}</p>
 <p>ISBN code: {{object.isbn}}</p>
 <p>available quantity: {{object.quantity}}</p>
+<p>location: {{object.location}}</p>
+<p>genre: {{object.genre}}</p>
+<p>available since: {{object.displayed_from}}</p>
 <p>{{object.summary}}</p>
+{% if user.is_authenticated %}
+{% if not user.profile.librarian %}
 <a  class="btn btn-outline-info" href="{% url 'book_request' object.id %}">Issue</a>
-
+{%endif%}
+{%endif%}
 
 {% endblock content %}
+{% else %}
+    PLEASE LOG IN TO CONTINUE
+{%endif %}
