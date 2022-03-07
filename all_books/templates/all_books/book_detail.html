@@ -2,21 +2,30 @@
 {% if user.is_authenticated %}
 {% block content %}
 
-<h1>{{ object.title }}</h1>
-<hr> <br>
-<p>by {{ object.author }}</p>
-<p>Publisher: {{ object.publisher }}</p>
-<p>ISBN code: {{object.isbn}}</p>
-<p>available quantity: {{object.quantity}}</p>
+<h1>{{ book_object.title }}</h1>
+        <hr> <br>
+<p>by {{ book_object.author }}</p>
+<p>Publisher: {{ book_object.publisher }}</p>
+<p>ISBN code: {{book_object.isbn}}</p>
+<p>available quantity: {{book_object.quantity}}</p>
 <p>location: {{object.location}}</p>
-<p>genre: {{object.genre}}</p>
-<p>available since: {{object.displayed_from}}</p>
-<p>{{object.summary}}</p>
+<p>genre: {{book_object.genre}}</p>
+<p>available since: {{book_object.displayed_from}}</p>
+<p>{{book_object.summary}}</p>
 {% if user.is_authenticated %}
-{% if not user.profile.librarian %}
-<a  class="btn btn-outline-info" href="{% url 'book_request' object.id %}">Issue</a>
+    {% if not user.profile.librarian %}
+        {% if book_object.quantity > 0 %}
+            <a  class="btn btn-outline-info" href="{% url 'book_request' book_object.id %}">Issue</a>
+        {%endif%}
+    {%endif%}
 {%endif%}
-{%endif%}
+<br>
+<hr>
+<hr>
+<br>
+{% for issue in issue_object %}
+<p>{{issue.student}}, rating it a {{issue.rating}} out of 5, writes that <br> <i>{{ issue.review }} </i> </p>
+{% endfor %}
 
 {% endblock content %}
 {% else %}

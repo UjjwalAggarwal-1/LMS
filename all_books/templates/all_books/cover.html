@@ -1,18 +1,48 @@
 {% extends "all_books/base.html" %}
+
 {% block content %}
 
-<main role="main" class="container">
-        {% if user.is_authenticated %}
-            {% if user.profile.librarian %}
-                <a href="{% url 'librarian_home' %}">you are already logged in, click to continue to main page</a>
-            {% else %}
-                <a href="{% url 'all_books_home' %}">you are already logged in, click to continue to main page</a>
-            {% endif %}
-        {%else%}
-            <a href="{% url 'login'%}">would you like to log in and continue to main page</a>
-                <br>
-            <a href="{% url 'all_books_home'%}">would you like to continue to main page without a login</a>
-        {%endif%}
-</main>
+    <div class="col-md-15">
+<h5>
+    {% if user.is_authenticated %}
+        {% if user.profile.librarian %}
+            you are already logged in, <a href="{% url 'librarian_home' %}">click here</a> to continue to main page
+        {% else %}
+            you are already logged in, <a href="{% url 'all_books_home' %}">click here</a> to continue to main page
+        {% endif %}
+    {%else%}
+        <a href="{% url 'login'%}">would you like to log in and continue to main page</a>
+            <br>
+        <a href="{% url 'all_books_home'%}">would you like to continue to main page without a login</a>
+    {%endif%}
+</h5>
+<br>
+<br>
+<hr><br>
+</div>
 
-{% endblock content %}
+      {% if user.is_authenticated %}
+
+  <div class="content-section">
+    <h3>Latest Arrivals</h3>
+    <p class='text-muted'> all new arrivals
+      <ul class="list-group">
+        {% for arrival in new_arrivals %}
+            <li class="list-group-item list-group-item-light">{{arrival.title}}</li>
+        {% endfor %}
+      </ul>
+    </p>
+  </div>
+  <div class="content-section">
+    <h3>Trending</h3>
+    <p class='text-muted'> all trending books
+      <ul class="list-group">
+      {% for issue in trending_issues %}
+        <li class="list-group-item list-group-item-light">{{ issue }}</li>
+      {% endfor %}
+      </ul>
+    </p>
+  </div>
+
+      {% endif %}
+      {% endblock content %}
