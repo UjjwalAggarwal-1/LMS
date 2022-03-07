@@ -1,6 +1,6 @@
 import datetime
 from django import forms
-from all_books.models import Books, Issue2
+from all_books.models import Book, Issue
 
 
 class UpdateBookForm(forms.Form):
@@ -12,7 +12,7 @@ class UpdateBookForm(forms.Form):
 class RequestBookForm(forms.ModelForm):
     class Meta:
         now = datetime.date.today()
-        model = Issue2
+        model = Issue
         fields = ['return_on']
         widgets = {'return_on': forms.widgets.DateInput(attrs={'type': 'date', 'min': now, 'max': now + datetime.timedelta(days=20)})}
 
@@ -24,7 +24,7 @@ class RequestBookForm(forms.ModelForm):
 
 class AddBookForm(forms.ModelForm):
     class Meta:
-        model = Books
+        model = Book
         fields = ['title', 'isbn', 'quantity']
 
 

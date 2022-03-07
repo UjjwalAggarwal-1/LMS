@@ -8,7 +8,7 @@
   <a href="{% url 'all_books_home' %}" > VIEW ALL BOOKS</a>
 <br>
 <br>
-{% for issue_request in issue_requests %}
+{% for issue_request in all_issue_requests %}
 {% if issue_request.issue_request_status == 'pending' %}
 <article class="media content-section">
   <div class="media-body">
