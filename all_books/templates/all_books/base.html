@@ -36,13 +36,18 @@
         <!-- Navbar Right Side -->
         <div class="navbar-nav">
             {% if user.is_authenticated %}
-                          {% if not user.profile.librarian %}
-                <a class="nav-item nav-link" href="{% url 'issue_requests_student' %}">Issue Requests</a>
-                            {% endif %}
-                <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
-                <a class="nav-item nav-link" href="{% url 'user_profile' %}">Profile</a>
+                {% if not user.profile.librarian %}
+                    <a class="nav-item nav-link" href="{% url 'issue_requests_student' %}">My Issue Requests</a>
+                {% endif %}
+                    <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                {% if not user.profile.librarian %}
+                    <a class="nav-item nav-link" href="{% url 'student_profile' %}">Profile</a>
+                {% endif %}
+                {% if user.profile.librarian %}
+                    <a class="nav-item nav-link" href="{% url 'librarian_profile' %}">Profile</a>
+                {% endif %}
             {% else %}
-              <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                    <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
             {% endif %}
         </div>
       </div>
