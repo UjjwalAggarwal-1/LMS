@@ -1,6 +1,6 @@
 {% extends "all_books/base.html" %}
-     {% if user.is_authenticated %}
-{%block content%}
+     {%block content%}{% if user.is_authenticated %}
+
 
 <h2>Requests made by You</h2>
 
@@ -8,7 +8,7 @@
 <div class="row">
 {% for issue_request in issue_requests_student %}
 {% if issue_request.issue_request_status == 'issued' %}
-<div class="col-md-6">
+<div class="col-md-8">
   <ul class="list-group">
       <article class="full content-section">
           <div>book: {{ issue_request.isbn_of_book }}</div>
@@ -29,7 +29,7 @@
 <div class="row">
 {% for issue_request in issue_requests_student %}
 {% if issue_request.issue_request_status == 'pending' or issue_request.issue_request_status == 'renewed' %}
-<div class="col-md-6">
+<div class="col-md-8">
     <ul class="list-group">
       <article class="full content-section">
           <div>book: {{ issue_request.isbn_of_book }}</div>
@@ -45,7 +45,7 @@
 <div class="row">
 {% for issue_request in issue_requests_student %}
 {% if issue_request.issue_request_status == 'rejected' %}
-<div class="col-md-6">
+<div class="col-md-8">
 <ul class="list-group">
 <article class="full content-section">
 <div>book: {{ issue_request.isbn_of_book }}</div>
@@ -61,16 +61,17 @@ rejected with note: <br>
 <div class="row">
 {% for issue_request in issue_requests_student %}
 {% if issue_request.issue_request_status == 'returned' %}
-<div class="col-md-6">
+<div class="col-md-8">
 <ul class="list-group">
 <article class="full content-section">
 <div>book: {{ issue_request.isbn_of_book }}</div>
 <div>Was issued on: {{ issue_request.issued_on }}</div>
 <div>Was Requested until: {{ issue_request.return_on }}</div>
-{% if issue_request.renewed_on is not None %}
+{% if not issue_request.renewed_on <= issue_request.issued_on %}
 <div>Was also Renewed on: {{ issue_request.renewed_on }}</div>
 {%endif%}
 <div>Was Returned on: {{ issue_request.returned_on }}</div>
+<div>Scored: {{ issue_request.score }} out of 100</div>
 </article>
 </ul>
 </div>
@@ -78,7 +79,7 @@ rejected with note: <br>
 {%endfor%}
 
 </div>
-{% endblock content %}
+
 {% else %}
     PLEASE LOG IN TO CONTINUE
-{% endif %}
+{% endif %}{% endblock content %}

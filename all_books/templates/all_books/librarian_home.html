@@ -1,7 +1,7 @@
 {% extends "all_books/base.html" %}
-{% if user.is_authenticated %}
 
-{%block content%}
+
+{%block content%}{% if user.is_authenticated %}
 <br>
 <h4>home page for books, library</h4>
 <br>
@@ -10,6 +10,7 @@
 <a href="{% url 'all_books_home' %}" > VIEW ALL BOOKS</a>
 <br>
 <br>
+<hr>
 <h4>New Requests</h4>
 {% for issue_request in all_issue_requests %}
 {% if issue_request.issue_request_status == 'pending' %}
@@ -43,9 +44,28 @@
 </article>
 {% endif %}
 {% endfor %}
+<br><hr>
+<h4>Returned Books (to be scored)</h4>
+{% for issue_request in all_issue_requests %}
+{% if issue_request.issue_request_status == 'returned' %}
+{% if issue_request.score is None %}
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <p>book name: {{ issue_request.isbn_of_book }}</p>
+      <p>student name: {{ issue_request.student }}</p>
+    </div>
+    <a href="{% url 'score_return' issue_request.id %}" >
+    <p class="article-content">returned on date: {{ issue_request.returned_on }}</p>
+  </a>
+  </div>
+</article>
+{% endif %}
+{% endif %}
+{% endfor %}
 
 
-{%endblock content%}
+
 {% else %}
 PLEASE LOG IN TO CONTINUE
-{% endif %}
+{% endif %}{%endblock content%}
