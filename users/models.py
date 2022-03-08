@@ -9,8 +9,9 @@ class Profile(models.Model):
     mobile_num = models.CharField(max_length=15, verbose_name="Mobile/Contact number")
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
     librarian = models.BooleanField(null=False, default=False)
-    hostel = models.CharField(max_length=25, choices=[('Srinivas Ramanujan', 'Srinivas Ramanujan'), ('Gandhi', 'Gandhi'),
-                                                     ('Krishna', 'Krishna'), ('Meera', 'Meera')], default='unknown')
+    hostel = models.CharField(max_length=25, choices=
+                            [('Srinivas Ramanujan', 'Srinivas Ramanujan'), ('Gandhi', 'Gandhi'),
+                             ('Krishna', 'Krishna'), ('Meera', 'Meera')], default='unknown')
     room_no = models.IntegerField(default=0)
 
     def __str__(self):

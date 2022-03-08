@@ -107,7 +107,17 @@ def issue_request_detailview(request, issue_request_id):
     else:
         form = RequestDecisionForm()
 
-    context = {'form': form, 'object': Issue.objects.get(id=issue_request_id)}
+    stu_iss_qs = Issue.objects.filter(student=Issue.objects.get(id=issue_request_id).student)
+    tscore = 0
+    tcount = stu_iss_qs.count()
+
+    for data in stu_iss_qs:
+        tscore += data.score
+        if data.score == 0:
+            tcount -= 1
+    merit_score = tscore / tcount
+    merit_score = round(merit_score, 3)
+    context = {'form': form, 'object': Issue.objects.get(id=issue_request_id), 'mets': merit_score}
 
     return render(request, 'all_books/librarian_home_2.html', context)
 

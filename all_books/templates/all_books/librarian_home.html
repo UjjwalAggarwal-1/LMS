@@ -48,7 +48,7 @@
 <h4>Returned Books (to be scored)</h4>
 {% for issue_request in all_issue_requests %}
 {% if issue_request.issue_request_status == 'returned' %}
-{% if issue_request.score is None %}
+{% if issue_request.score == 0 %}
 <article class="media content-section">
   <div class="media-body">
     <div class="article-metadata">

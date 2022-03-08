@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import StuProfileUpdateForm, LibProfileUpdateForm
 from django.contrib.auth.decorators import login_required
+from all_books.models import Issue
 
 
 @login_required
@@ -14,7 +15,18 @@ def student_profile(request):
             return redirect('all_books_home')
     else:
         p_form = StuProfileUpdateForm(instance=request.user.profile)
-    context = {'title': 'Profile', 'p_form': p_form}
+
+    stu_iss_qs = Issue.objects.filter(student=request.user)
+    tscore = 0
+    tcount = stu_iss_qs.count()
+
+    for data in stu_iss_qs:
+        tscore += data.score
+        if data.score == 0:
+            tcount -= 1
+    merit_score = tscore / tcount
+    merit_score = round(merit_score, 3)
+    context = {'title': 'Profile', 'p_form': p_form, 'mets': merit_score}
     return render(request, 'users/student_profile.html', context)
 
 
