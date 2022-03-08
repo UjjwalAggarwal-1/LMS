@@ -1,0 +1,118 @@
+{% extends "all_books/base.html" %}
+{% block content %}{% if user.is_authenticated %}
+
+<h4>Search Results</h4>
+<hr>
+<p> <i>{{ query }} matched in title</i></p>
+{% for book in book_objs_title %}
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" >author: {{ book.author }}</a>
+      <small class="text-muted">publisher: {{ book.publisher }}</small>
+      <small class="text-muted">ISBN: {{ book.isbn }}</small>
+
+      {% if book.quantity == 0 %}
+      <small class="text-muted">[[no copy available]]</small>
+      {% endif %}
+      {% if user.is_authenticated %}
+      {% if not user.profile.librarian %}
+      {% if book.quantity > 0 %}
+      <a href="{% url 'book_request' book.id %}">Issue</a>
+      {% endif %}
+      {% endif %}
+      {%if user.profile.librarian%}
+      <a href="{% url 'update_book' book.id %}">Update</a>
+      {% endif %}
+      {% endif %}
+
+    </div>
+    <h2>
+      {% if user.profile.librarian %}
+        <a class="article-title" href="{% url 'update_book' book.id %}">title: {{ book.title }}</a>
+      {%else%}
+        <a class="article-title" href="{% url 'book_detail' book.id %}">title: {{ book.title }}</a>
+      {%endif%}
+    </h2>
+    <p class="article-content">summary: {{ book.summary }}</p>
+  </div>
+</article>
+{% endfor %}
+<br><hr>
+<p> <i>{{ query }} matched in author</i></p>
+{% for book in book_objs_author %}
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" >author: {{ book.author }}</a>
+      <small class="text-muted">publisher: {{ book.publisher }}</small>
+      <small class="text-muted">ISBN: {{ book.isbn }}</small>
+
+      {% if book.quantity == 0 %}
+      <small class="text-muted">[[no copy available]]</small>
+      {% endif %}
+      {% if user.is_authenticated %}
+      {% if not user.profile.librarian %}
+      {% if book.quantity > 0 %}
+      <a href="{% url 'book_request' book.id %}">Issue</a>
+      {% endif %}
+      {% endif %}
+      {%if user.profile.librarian%}
+      <a href="{% url 'update_book' book.id %}">Update</a>
+      {% endif %}
+      {% endif %}
+
+    </div>
+    <h2>
+      {% if user.profile.librarian %}
+        <a class="article-title" href="{% url 'update_book' book.id %}">title: {{ book.title }}</a>
+      {%else%}
+        <a class="article-title" href="{% url 'book_detail' book.id %}">title: {{ book.title }}</a>
+      {%endif%}
+    </h2>
+    <p class="article-content">summary: {{ book.summary }}</p>
+  </div>
+</article>
+{% endfor %}
+<br><hr>
+<p> <i>{{ query }} matched in ISBN</i></p>
+{% for book in book_objs_isbn %}
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" >author: {{ book.author }}</a>
+      <small class="text-muted">publisher: {{ book.publisher }}</small>
+      <small class="text-muted">ISBN: {{ book.isbn }}</small>
+
+      {% if book.quantity == 0 %}
+      <small class="text-muted">[[no copy available]]</small>
+      {% endif %}
+      {% if user.is_authenticated %}
+      {% if not user.profile.librarian %}
+      {% if book.quantity > 0 %}
+      <a href="{% url 'book_request' book.id %}">Issue</a>
+      {% endif %}
+      {% endif %}
+      {%if user.profile.librarian%}
+      <a href="{% url 'update_book' book.id %}">Update</a>
+      {% endif %}
+      {% endif %}
+
+    </div>
+    <h2>
+      {% if user.profile.librarian %}
+        <a class="article-title" href="{% url 'update_book' book.id %}">title: {{ book.title }}</a>
+      {%else%}
+        <a class="article-title" href="{% url 'book_detail' book.id %}">title: {{ book.title }}</a>
+      {%endif%}
+    </h2>
+    <p class="article-content">summary: {{ book.summary }}</p>
+  </div>
+</article>
+{% endfor %}
+<br>
+<hr>
+
+{% else %}
+    PLEASE LOG IN TO CONTINUE
+{% endif %}{% endblock content %}

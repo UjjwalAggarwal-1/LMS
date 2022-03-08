@@ -17,7 +17,7 @@ urlpatterns = [
     path('librarian_profile/', users_views.librarian_profile, name='librarian_profile'),
     path('librarian_home/', issue_request_listview, name='librarian_home'),
     path('librarian_home/<int:issue_request_id>/', issue_request_detailview, name='librarian_home_2'),
-    path('add_book/', add_book, name='add_book')
+    path('add_book/', add_book, name='add_book'),
 ]
 
 

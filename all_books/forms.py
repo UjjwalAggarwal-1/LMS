@@ -1,5 +1,4 @@
 import datetime
-
 import django.forms
 from django import forms
 from all_books.models import Book, Issue
