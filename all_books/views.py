@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
 from .models import Book, Issue
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
 from .forms import AddBookForm, RequestDecisionForm, RequestBookForm, ReturnBookForm
 
@@ -87,7 +87,7 @@ def issue_request_detailview(request, issue_request_id):
         if form.is_valid():
             issue_req_stat = form.cleaned_data.get('issue_request_status')
             reject_request_data = form.cleaned_data.get('reject_request')
-            condtn = reject_request_data is ''
+            condtn = (reject_request_data == '')
             if (issue_req_stat in {'issued', 'renewed'} and not condtn) or (issue_req_stat == 'rejected' and condtn):
                 raise forms.ValidationError("Please fill either reject reason or issue request status, but not both")
             else:
@@ -157,3 +157,17 @@ class ScoreTheReturn(UpdateView):
     fields = ['score']
     template_name = 'all_books/score_return.html'
     success_url = reverse_lazy('librarian_home')
+
+
+def search(request):
+    query = request.GET['query']
+    if query == '':
+        context = {}
+    else:
+        context = {
+            'book_objs_title': Book.objects.filter(title__icontains=query),
+            'book_objs_author': Book.objects.filter(author__icontains=query),
+            'book_objs_isbn': Book.objects.filter(isbn__icontains=query),
+            'query': query,
+                   }
+    return render(request, 'all_books/search_results.html', context)
