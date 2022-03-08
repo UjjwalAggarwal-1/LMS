@@ -64,7 +64,7 @@ def book_request(request, pk):
             messages.success(request, 'book was requested, please wait for approval')
             return redirect('all_books_home')
     else:
-        form = RequestBookForm(initial={'return_on': datetime.date.today()+datetime.timedelta(days=20)})
+        form = RequestBookForm(initial={'return_on': datetime.datetime.now()+datetime.timedelta(days=20)})
     return render(request, 'all_books/request_book.html', {'form': form})
 
 
@@ -87,8 +87,8 @@ def issue_request_detailview(request, issue_request_id):
         if form.is_valid():
             issue_req_stat = form.cleaned_data.get('issue_request_status')
             reject_request_data = form.cleaned_data.get('reject_request')
-            condtn = reject_request_data is None
-            if (issue_req_stat in ['issued', 'renewed'] and not condtn) or (issue_req_stat == 'rejected' and condtn):
+            condtn = reject_request_data is ''
+            if (issue_req_stat in {'issued', 'renewed'} and not condtn) or (issue_req_stat == 'rejected' and condtn):
                 raise forms.ValidationError("Please fill either reject reason or issue request status, but not both")
             else:
                 old_obj = Issue.objects.get(id=issue_request_id)
@@ -141,10 +141,19 @@ def return_book(request, pk):
                     book.save()
                 elif issue_req_stat == 'renewed':
                     old_obj.return_on = renewed_request
-            old_obj.review = review
-            old_obj.rating = rating
+                if review is not None:
+                    old_obj.review = review
+                if rating is not None:
+                    old_obj.rating = rating
             old_obj.save()
             return redirect('issue_requests_student')
     else:
         form = ReturnBookForm()
     return render(request, 'all_books/return_book.html', {'form': form})
+
+
+class ScoreTheReturn(UpdateView):
+    model = Issue
+    fields = ['score']
+    template_name = 'all_books/score_return.html'
+    success_url = reverse_lazy('librarian_home')

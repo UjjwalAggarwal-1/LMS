@@ -1,7 +1,7 @@
 {% extends "all_books/base.html" %}
-     {% if user.is_authenticated %}
 
-{%block content%}
+
+{%block content%} {% if user.is_authenticated %}
 {% load crispy_forms_tags %}
 
 <h5>{provide reject reason if rejecting, otherwise leave blank} </h5>
@@ -15,6 +15,8 @@ requested by: {{ object.student }}
 requested till: {{ object.return_on }} <br>
     {% if object.issue_request_status == "renewed" %}
         was previously issued on {{ object.issued_on }}
+    {% elif object.issue_request_status == 'pending' %}
+        new request/not renew request <br>
     {% endif %}
 
 
@@ -25,7 +27,7 @@ requested till: {{ object.return_on }} <br>
     {{form|crispy}}
 <input class="btn btn-outline-info" type="submit" value="Confirm">
 </form>
-{%endblock content%}
+
 {% else %}
     PLEASE LOG IN TO CONTINUE
-{% endif %}
+{% endif %}{%endblock content%}

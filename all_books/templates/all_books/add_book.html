@@ -1,15 +1,13 @@
 {% extends "all_books/base.html" %}
-{% if user.is_authenticated %}
-{% block content %}
+
+{% block content %}{% if user.is_authenticated %}
 <form method="post" >
     {% csrf_token %}
     {{ form.as_p }}
     <br>
     <input type="submit" value="Add">
 </form>
-{% endblock content %}
 {% else %}
 PLEASE LOG IN TO CONTINUE
 {% endif %}
-
-
+{% endblock content %}

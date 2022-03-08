@@ -1,6 +1,6 @@
 {% extends "all_books/base.html" %}
-{% if user.is_authenticated %}
 {% block content %}
+{% if user.is_authenticated %}
 
 <h1>{{ book_object.title }}</h1>
         <hr> <br>
@@ -27,7 +27,7 @@
 <p>{{issue.student}}, rating it a {{issue.rating}} out of 5, writes that <br> <i>{{ issue.review }} </i> </p>
 {% endfor %}
 
-{% endblock content %}
 {% else %}
     PLEASE LOG IN TO CONTINUE
 {%endif %}
+{% endblock content %}
