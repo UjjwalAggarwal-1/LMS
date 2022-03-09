@@ -8,6 +8,8 @@ from .models import Book, Issue
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
 from .forms import AddBookForm, RequestDecisionForm, RequestBookForm, ReturnBookForm
+from django.utils import timezone
+
 
 
 def add_book(request):
@@ -123,10 +125,50 @@ def issue_request_detailview(request, issue_request_id):
 
 
 def cover(request):
-    last_month = datetime.datetime.now() - datetime.timedelta(days=30)
+    # lastMonthIssue = []
+    # for i in range(31):
+    #     varDate = datetime.datetime.now() - datetime.timedelta(days=i)
+    #     varObj = Issue.objects.get(issued_on=datetime(varDate))
+    #     lastMonthIssue.append(varObj)
+    # trending_issues = {}
+    # for item in lastMonthIssue:
+    #     if item.isbn_of_book.title not in trending_issues:
+    #         trending_issues.add(item.isbn_of_book.title)
+
+    # issqs = Issue.objects.all().order_by('-issued_on')
+    # trendiss = []
+    # for isso in issqs:
+    #
+    #     trendiss.append(isso.isbn_of_book.title)
+
+    # trendissdict = {}
+    # for book in Book.objects.all():
+    #     trendissdict[Issue.objects.filter(isbn_of_book=book).count()] = book.title
+    # trendisslist = []
+    # for i in range(3):
+    #     maxiss = max(trendissdict)
+    #     trendisslist.append(trendissdict.pop(maxiss))
+
+    lastmonth = timezone.now() - timezone.timedelta(days=30)
+    trendissdict = {}
+
+    for book in Book.objects.all():
+        count = 0
+        for issobj in Issue.objects.filter(isbn_of_book=book):
+            if issobj.issued_on >= lastmonth:
+                count += 1
+        trendissdict[book.title] = count
+
+    trendisslist = []
+    for i in range(3 if len(trendisslist) <= 3 else 12):
+        maxcnt = max(trendissdict.values())
+        maxiss = list(trendissdict.keys())[list(trendissdict.values()).index(maxcnt)]
+        trendisslist.append(maxiss)
+        trendissdict.pop(maxiss)
+
     context = {'title': 'cover_page',
                'new_arrivals': Book.objects.all()[:7:-1],
-               'trending_issues': Issue.objects.values('isbn_of_book_id').distinct()}
+               'trending_issues': trendisslist}
 
     return render(request, 'all_books/cover.html', context)
 

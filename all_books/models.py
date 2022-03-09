@@ -36,3 +36,6 @@ class Issue(models.Model):
     rating = models.IntegerField(choices=rating_choices, default=0, blank=True, null=True)
     review = models.TextField(null=True, blank=True)
     score = models.IntegerField(null=True, blank=True, default=0)
+
+    def __str__(self):
+        return self.isbn_of_book.title
