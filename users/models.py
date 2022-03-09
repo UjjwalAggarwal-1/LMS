@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
 
+from all_books.models import Issue
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -26,3 +28,16 @@ class Profile(models.Model):
             output_size = (200, 200)
             img.thumbnail(output_size)
             img.save(self.image.path)
+
+    @property
+    def merit_score(self):
+        stu_iss_qs = Issue.objects.filter(student=self.user)
+        tscore = 0
+        tcount = stu_iss_qs.count()
+        for data in stu_iss_qs:
+            tscore += data.score
+            if data.score == 0:
+                tcount -= 1
+        merit_score = tscore / tcount
+        merit_score = round(merit_score, 3)
+        return '%.2f' % merit_score
