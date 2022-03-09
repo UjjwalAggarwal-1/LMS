@@ -12,6 +12,9 @@
 <p>genre: {{book_object.genre}}</p>
 <p>available since: {{book_object.displayed_from}}</p>
 <p>{{book_object.summary}}</p>
+{% if book_object.num_issues >= 50 %}
+    <p><i>{{book_object.num_issues}} issued in the last 90 days</i></p>
+{% endif %}
 {% if user.is_authenticated %}
     {% if not user.profile.librarian %}
         {% if book_object.quantity > 0 %}

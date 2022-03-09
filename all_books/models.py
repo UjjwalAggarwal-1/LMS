@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from django.utils import timezone
 
 
 class Book(models.Model):
@@ -18,6 +19,13 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def num_issues(self):
+        count = 0
+        for issobj in Issue.objects.filter(isbn_of_book=self):
+            if issobj.issued_on >= (timezone.now() - timezone.timedelta(days=90)):
+                count += 1
+        return '%d' % count
 
 
 status_choices = [("pending", 'Pending'), ('issued', 'Issued'), ('returned', 'Returned'), ('rejected', 'Rejected'), ('renewed', 'Renewed')]
