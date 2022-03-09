@@ -3,6 +3,8 @@
 
 <h4>Search Results</h4>
 <hr>
+<div class="row">
+<div class="col-md-6">
 <p> <i>{{ query }} matched in title</i></p>
 {% for book in book_objs_title %}
 <article class="media content-section">
@@ -110,8 +112,14 @@
   </div>
 </article>
 {% endfor %}
+</div>
 <br>
 <hr>
+
+<div class="col-md-4">
+  dekho
+</div>
+</div>
 
 {% else %}
     PLEASE LOG IN TO CONTINUE
