@@ -38,7 +38,7 @@
         <!-- Navbar Right Side -->
         <div class="navbar-nav">
             {% if user.is_authenticated %}
-            <form method="get" class="nav-item nav-link" action="http://127.0.0.1:8000/all_books/search/">
+            <form method="get" class="nav-item nav-link" action="/all_books/search/">
                 <input type="search" placeholder="Search Here" name="query" id="query">
                 <button class="btn-outline-success" type="submit">GO</button>
             </form>

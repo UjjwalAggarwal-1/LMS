@@ -11,7 +11,6 @@ from .forms import AddBookForm, RequestDecisionForm, RequestBookForm, ReturnBook
 from django.utils import timezone
 
 
-
 def add_book(request):
     if request.method == 'POST':
         form = AddBookForm(request.POST)
@@ -144,9 +143,12 @@ def cover(request):
 
     for book in Book.objects.all():
         count = 0
+        student_list = []
         for issobj in Issue.objects.filter(isbn_of_book=book):
             if issobj.issued_on >= lastmonth:
-                count += 1
+                if issobj.student not in student_list:
+                    count += 1
+                    student_list.append(issobj.student)
         trendissdict[book.title] = count
 
     trendisslist = []
