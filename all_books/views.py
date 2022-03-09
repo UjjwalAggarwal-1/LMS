@@ -47,7 +47,7 @@ def librarian_home(request):
 
 class BookUpdateView(UpdateView):
     model = Book
-    fields = ['isbn', 'title', 'quantity']
+    fields = ['isbn', 'title', 'quantity', 'location', 'genre', 'summary']
     template_name = 'all_books/update_book.html'
     success_url = reverse_lazy('librarian_home')
 
