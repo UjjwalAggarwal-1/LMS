@@ -10,7 +10,7 @@
 
 {{ object.isbn_of_book }}, {{ object.isbn_of_book.quantity }} copies left
 <br>
-requested by: {{ object.student }}, current merit score: {{mets}}
+requested by: {{ object.student.username }}, current merit score: {{object.student.profile.merit_score}}
 <br>
 requested till: {{ object.return_on }} <br>
     {% if object.issue_request_status == "renewed" %}

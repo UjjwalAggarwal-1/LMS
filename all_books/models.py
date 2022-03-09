@@ -38,4 +38,6 @@ class Issue(models.Model):
     score = models.IntegerField(null=True, blank=True, default=0)
 
     def __str__(self):
-        return self.isbn_of_book.title
+        return self.isbn_of_book.title, self.student.username
+
+
