@@ -1,5 +1,5 @@
 {% extends "all_books/base.html" %}
-    {% block content %} {% if user.is_authenticated %}
+    {% block content %} {% if user.profile.librarian %}
 
 {% load crispy_forms_tags %}
 

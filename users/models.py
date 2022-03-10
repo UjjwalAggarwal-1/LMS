@@ -41,3 +41,8 @@ class Profile(models.Model):
         merit_score = tscore / tcount
         merit_score = round(merit_score, 3)
         return '%.2f' % merit_score
+
+    @property
+    def total_issues(self):
+        total_issues = Issue.objects.filter(student=self.user).count()
+        return '%d' % total_issues

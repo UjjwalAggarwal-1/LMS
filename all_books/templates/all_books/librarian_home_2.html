@@ -14,11 +14,16 @@ requested by: {{ object.student.username }}, current merit score: {{object.stude
 <br>
 requested till: {{ object.return_on }} <br>
     {% if object.issue_request_status == "renewed" %}
-        was previously issued on {{ object.issued_on }}
+        was previously issued on {{ object.issued_on }} <br>
     {% elif object.issue_request_status == 'pending' %}
         new request/not renew request <br>
     {% endif %}
 
+{% if studiss != 0 %}
+<div class="alert alert-danger alert-dismissible fade show">
+    student already has {{ studiss }} copy/copies of this book currently issued <br>
+</div>
+{% endif %}
 
 <br>
 <br>

@@ -1,11 +1,11 @@
 {% extends "all_books/base.html" %}
 
-{% block content %}{% if user.is_authenticated %}
+{% block content %}{% if user.profile.librarian %}{% load crispy_forms_tags %}
 <form method="post" >
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form|crispy }}
     <br>
-    <input type="submit" value="Add">
+    <button class="btn btn-outline-info" type="submit">Add</button>
 </form>
 {% else %}
 PLEASE LOG IN TO CONTINUE

@@ -1,113 +1,114 @@
 {% extends "all_books/base.html" %}
 {%block content%}{% if user.is_authenticated %}
+{% load crispy_forms_tags %}
 
     <main role="main" class="container">
 
-      <h3>Search in Library</h3>
-      <form method="GET" action=".">
-        <div class="form-row">
-            <div class="form-group col-12">
-                <div class="input-group">
-                    <input class="form-control py-2 border-right-0 border" type="search" name="title_contains" placeholder="Title contains..." />
-                    <span class="input-group-append">
-                        <div class="input-group-text bg-transparent">
-                            <i class="fa fa-search"></i>
-                        </div>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-12">
-                <div class="input-group">
-                    <input class="form-control py-2 border-right-0 border" type="search" name="id_exact" placeholder="ID exact..." />
-                    <span class="input-group-append">
-                        <div class="input-group-text bg-transparent">
-                            <i class="fa fa-search"></i>
-                        </div>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-12">
-                <div class="input-group">
-                    <input class="form-control py-2 border-right-0 border" type="search" name="title_or_author" placeholder="Title or author..." />
-                    <span class="input-group-append">
-                        <div class="input-group-text bg-transparent">
-                            <i class="fa fa-search"></i>
-                        </div>
-                    </span>
-                </div>
-            </div>
-        </div>
+      <h3>Search in LMS Database</h3>
+      <form method="GET" action="/all_books/more_search/">
+
+        <input class="form-control py-2" type="search" name="title" placeholder="Title contains..." default=""/>
+        <br>
+        <input class="form-control py-2" type="search" name="isbn" placeholder="ISBN is ..." />
+        <br>
+        <input class="form-control py-2" type="search" name="author" placeholder="Author contains..." />
+        <br>
         <div class="form-row">
           <div class="form-group col-md-2 col-lg-2">
-            <label for="viewCountMin">Minimum View Count</label>
-            <input type="number" min=0 class="form-control" id="viewCountMin" placeholder="0" name="view_count_min">
+            <label for="ddate_min">Display date minimum</label>
+            <input type="date" class="form-control" id="ddate_min" name="ddate_min">
           </div>
           <div class="form-group col-md-2 col-lg-2">
-            <label for="viewCountMax">Maximum View Count</label>
-            <input type="number" min=0 class="form-control" id="viewCountMax" placeholder="10000?" name="view_count_max">
+            <label for="ddate_max">Display date maximum</label>
+            <input type="date" class="form-control" id="ddate_max" name="ddate_max">
           </div>
           <div class="form-group col-md-2 col-lg-2">
-            <label for="publishDateMin">Publish date minimum</label>
-            <input type="date" class="form-control" id="publishDateMin" name="date_min">
+            <label for="pdate_min">Publish date minimum</label>
+            <input type="date" class="form-control" id="pdate_min" name="pdate_min">
           </div>
           <div class="form-group col-md-2 col-lg-2">
-            <label for="publishDateMax">Publish date maximum</label>
-            <input type="date" class="form-control" id="publishDateMax" name="date_max">
+            <label for="pdate_max">Display date maximum</label>
+            <input type="date" class="form-control" id="pdate_max" name="pdate_max">
           </div>
           <div class="form-group col-md-4">
-            <label for="category">Category</label>
-            <select id="category" class="form-control" name="category">
-              <option selected>Choose...</option>
-              {% for cat in categories %}
-              <option value="{{ cat }}">{{ cat }}</option>
+            <label for="genre">Genre (hold down Ctrl key to select multiple) </label>
+            <select multiple id="genre" class="form-control" name="genre">
+              {% for g in genre %}
+              <option value="{{ g }}">{{ g }}</option>
               {% endfor %}
             </select>
           </div>
         </div>
-        <div class="form-group">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="reviewed" name="reviewed">
-            <label class="form-check-label" for="reviewed">
-              Reviewed
-            </label>
+        <div class="form-row">
+          <div class="form-group">
+            <div class="form-check">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="available" name="available">
+              <label class="form-check-label" for="available">
+                Available for Issue
+              </label>
+            </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="notavailable" name="notavailable">
+              <label class="form-check-label" for="notavailable">
+                Not Available
+              </label>
+            </div>
+            </div>
           </div>
         </div>
+        <div class="form-row">
         <div class="form-group">
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="notReviewed" name="notReviewed">
-            <label class="form-check-label" for="notReviewed">
-              Not reviewed
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="descorder" name="descorder">
+            <label class="form-check-label" for="descorder">
+              Descending order of publishing date
             </label>
           </div>
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary">Search</button>
+          <div class="form-group">
+            <div class="form-check">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="ascorder" name="ascorder">
+              <label class="form-check-label" for="ascorder">
+                Ascending order of publishing date
+              </label>
+            </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+        <div class="col-md-3">
+        <button type="submit" class="btn btn-outline-info">Search</button> </div><div class="col-md-3">
+        </div></div>
       </form>
 
-      <hr />
+      <hr>
 
-      <div class="row">
-        <ul>
-          {% for journal in queryset %}
-            <li>
-              {{ journal.title }}
-              <span>Author: {{ journal.author.name }}</span>
-              <span>
-                {% for cat in journal.categories.all %}
-                  {{ cat }}
-                {% endfor %}
-              </span>
-              <span>Publish date: {{ journal.publish_date }}</span>
-              <span>View count: {{ journal.views }}</span>
-              <span>Reviewed: {{ journal.reviewed }}</span>
-            </li>
-            <hr />
-          {% endfor %}
-        </ul>
-      </div>
+<div class="col-md-16">
+  <div class='row'>
+      {% for book in queryset %}
+      <ul>
+        <article class="media content-section">
+          <div class="media-body">
+
+          <h6> <a href="{% url 'book_detail' book.id %}">
+            {{ book.title }}
+          </a> </h6>
+          <span>Author: {{ book.author }}</span> <br>
+          <span>Quantity: {{ book.quantity }}</span>
+
+          </div>
+        </article></ul>
+      {% endfor %}
+
+      </div></div>
 
     </main>
 

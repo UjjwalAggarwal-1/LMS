@@ -4,12 +4,6 @@ from django import forms
 from all_books.models import Book, Issue
 
 
-class UpdateBookForm(forms.Form):
-    isbn = forms.CharField(max_length=20)
-    title = forms.CharField(max_length=100)
-    quantity = forms.IntegerField()
-
-
 class RequestBookForm(forms.ModelForm):
     class Meta:
         now = datetime.date.today()
@@ -22,7 +16,8 @@ class RequestBookForm(forms.ModelForm):
 class AddBookForm(forms.ModelForm):
     class Meta:
         model = Book
-        fields = ['title', 'isbn', 'quantity']
+        fields = '__all__'
+        exclude = ('availability',)
 
 
 class RequestDecisionForm(forms.Form):
