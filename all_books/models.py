@@ -3,6 +3,17 @@ from django.contrib.auth.models import User
 import datetime
 from django.utils import timezone
 
+genre_choice = [('Action/Adventure', 'Action/Adventure'), ('Classics', 'Classics'),
+                ('Comic Book/Graphic Novel', 'Comic Book/Graphic Novel'), ('Folklore', 'Folklore'),
+                ('Detective/Mystery', 'Detective/Mystery'), ('Fantasy', 'Fantasy'),
+                ('Historical Fiction', 'Historical Fiction'), ('Horror', 'Horror'),
+                ('Literary Fiction', 'Literary Fiction'), ('Romance', 'Romance'),
+                ('Science Fiction (Sci-Fi)', 'Science Fiction (Sci-Fi)'), ('Short Stories', 'Short Stories'),
+                ('Suspense/Thrillers', 'Suspense/Thrillers'),
+                ('Biographies/Autobiographies', 'Biographies/Autobiographies'),
+                ('Cookbooks', 'Cookbooks'), ('History', 'History'),
+                ('Poetry', 'Poetry'), ('Self-Growth', 'Self-Growth'), ('True Crime', 'True Crime')]
+
 
 class Book(models.Model):
     title = models.CharField(max_length=100, default='none')
@@ -15,6 +26,7 @@ class Book(models.Model):
     displayed_from = models.DateTimeField(blank=True, null=True, default=datetime.datetime.now())
     availability = models.ManyToManyField(User, through='Issue')
     quantity = models.PositiveIntegerField()
+    published = models.DateField(default=datetime.date.today())
 
     def __str__(self):
         return self.title
@@ -28,7 +40,7 @@ class Book(models.Model):
         return '%d' % count
 
 
-status_choices = [("pending", 'Pending'), ('issued', 'Issued'), ('returned', 'Returned'), ('rejected', 'Rejected'), ('renewed', 'Renewed')]
+status_choices = [('pending', 'Pending'), ('issued', 'Issued'), ('returned', 'Returned'), ('rejected', 'Rejected'), ('renewed', 'Renewed')]
 rating_choices = [(0, 'No Rating'), (1, 'Poor'), (2, 'Average'), (3, 'Good'), (4, 'Very Good'), (5, 'Excellent')]
 
 

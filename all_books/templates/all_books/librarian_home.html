@@ -1,7 +1,7 @@
 {% extends "all_books/base.html" %}
 
 
-{%block content%}{% if user.is_authenticated %}
+{%block content%}{% if user.profile.librarian %}
 <br>
 <h4>home page for books, library</h4>
 <br>

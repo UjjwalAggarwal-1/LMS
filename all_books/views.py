@@ -47,7 +47,8 @@ def librarian_home(request):
 
 class BookUpdateView(UpdateView):
     model = Book
-    fields = ['isbn', 'title', 'quantity', 'location', 'genre', 'summary']
+    fields = ['title', 'author', 'publisher', 'published', 'isbn', 'quantity', 'genre', 'summary', 'location',
+              'displayed_from']
     template_name = 'all_books/update_book.html'
     success_url = reverse_lazy('librarian_home')
 
@@ -65,7 +66,7 @@ def book_request(request, pk):
             messages.success(request, 'book was requested, please wait for approval')
             return redirect('all_books_home')
     else:
-        form = RequestBookForm(initial={'return_on': datetime.datetime.now()+datetime.timedelta(days=20)})
+        form = RequestBookForm(initial={'return_on': datetime.datetime.now() + datetime.timedelta(days=20)})
     return render(request, 'all_books/request_book.html', {'form': form})
 
 
@@ -75,7 +76,7 @@ class IssueRequestStudentListView(ListView):  # personal requests of the student
     context_object_name = 'issue_requests_student'
 
 
-def issue_request_listview(request):       # for librarians' page for viewing requests
+def issue_request_listview(request):  # for librarians' page for viewing requests
     context_object = Issue.objects.all()
     context = {'all_issue_requests': context_object}
 
@@ -94,11 +95,11 @@ def issue_request_detailview(request, issue_request_id):
             else:
                 old_obj = Issue.objects.get(id=issue_request_id)
                 old_obj.issue_request_status = issue_req_stat
-                book = old_obj.isbn_of_book
+                reqbook = old_obj.isbn_of_book
                 if issue_req_stat == 'issued':
-                    book.quantity -= 1
+                    reqbook.quantity -= 1
                     old_obj.issued_on = datetime.datetime.now()
-                    book.save()
+                    reqbook.save()
                 elif issue_req_stat == 'renewed':
                     old_obj.renewed_on = datetime.datetime.now()
                 else:
@@ -108,36 +109,16 @@ def issue_request_detailview(request, issue_request_id):
     else:
         form = RequestDecisionForm()
 
-    context = {'form': form, 'object': Issue.objects.get(id=issue_request_id)}
+    reqbook = Issue.objects.get(id=issue_request_id).isbn_of_book
+    reqstudent = Issue.objects.get(id=issue_request_id).student
+    context = {'form': form, 'object': Issue.objects.get(id=issue_request_id),
+               'studiss': Issue.objects.filter(student=reqstudent, isbn_of_book=reqbook,
+                                               issue_request_status='issued').count()}
 
     return render(request, 'all_books/librarian_home_2.html', context)
 
 
 def cover(request):
-    # lastMonthIssue = []
-    # for i in range(31):
-    #     varDate = datetime.datetime.now() - datetime.timedelta(days=i)
-    #     varObj = Issue.objects.get(issued_on=datetime(varDate))
-    #     lastMonthIssue.append(varObj)
-    # trending_issues = {}
-    # for item in lastMonthIssue:
-    #     if item.isbn_of_book.title not in trending_issues:
-    #         trending_issues.add(item.isbn_of_book.title)
-
-    # issqs = Issue.objects.all().order_by('-issued_on')
-    # trendiss = []
-    # for isso in issqs:
-    #
-    #     trendiss.append(isso.isbn_of_book.title)
-
-    # trendissdict = {}
-    # for book in Book.objects.all():
-    #     trendissdict[Issue.objects.filter(isbn_of_book=book).count()] = book.title
-    # trendisslist = []
-    # for i in range(3):
-    #     maxiss = max(trendissdict)
-    #     trendisslist.append(trendissdict.pop(maxiss))
-
     lastmonth = timezone.now() - timezone.timedelta(days=30)
     trendissdict = {}
 
@@ -175,7 +156,8 @@ def return_book(request, pk):
             rating = form.cleaned_data.get('rating')
             old_obj = Issue.objects.get(pk=pk)
             old_obj.issue_request_status = issue_req_stat
-            if (issue_req_stat == 'renewed' and renewed_request is None) or (issue_req_stat == 'returned' and renewed_request is not None):
+            if (issue_req_stat == 'renewed' and renewed_request is None) or (
+                    issue_req_stat == 'returned' and renewed_request is not None):
                 raise forms.ValidationError("invalid combination of data")
             else:
                 if issue_req_stat == 'returned':
@@ -213,5 +195,59 @@ def search(request):
             'book_objs_author': Book.objects.filter(author__icontains=query),
             'book_objs_isbn': Book.objects.filter(isbn__icontains=query),
             'query': query,
-                   }
+        }
     return render(request, 'all_books/search_results.html', context)
+
+
+def more_search(request):
+    genre_choice = ['Action', 'Adventure', 'Classics', 'Comic Book', 'Graphic Novel', 'Folklore', 'Detective',
+                    'Horror', 'Literary Fiction', 'Romance', 'Science Fiction', 'Short Stories',
+                    'Suspense', 'Thrillers', 'Biographies', 'Autobiographies', 'Cookbooks', 'History', 'Poetry',
+                    'Mystery', 'Fantasy', 'Self Growth', 'True Crime']
+
+    rtitle = request.GET.get('title')
+    risbn = request.GET.get('isbn')
+    rauthor = request.GET.get('author')
+    rgenre = request.GET.get('genre')
+    rddate_min = request.GET.get('ddate_min')
+    rddate_max = request.GET.get('ddate_max')
+    rpdate_min = request.GET.get('pdate_min')
+    rpdate_max = request.GET.get('pdate_max')
+    ravailable = request.GET.get('available')
+    rnotavailable = request.GET.get('notavailable')
+    rdescorder = request.GET.get('descorder')
+    rascorder = request.GET.get('ascorder')
+
+    qs = Book.objects.all().order_by('title')
+
+    if rtitle is not None:
+        qs = qs.filter(title__icontains=rtitle)
+    if risbn is not None:
+        qs = qs.filter(isbn__icontains=risbn)
+    if rauthor is not None:
+        qs = qs.filter(author__icontains=rauthor)
+    if rgenre is not None:
+        qs = qs.filter(genre__icontains=rgenre)
+
+    if rnotavailable:
+        qs = qs.filter(quantity=0)
+    if ravailable:
+        qs = qs.exclude(quantity=0)
+
+    if rdescorder:
+        qs = qs.order_by('-published')
+    if rascorder:
+        qs = qs.order_by('published')
+
+    if rpdate_min != '':
+        qs = qs.filter(published__gte=rpdate_min)
+    if rpdate_max != '':
+        qs = qs.filter(published__lte=rpdate_max)
+    if rddate_min != '':
+        qs = qs.filter(displayed_from__gte=rddate_min)
+    if rddate_max != '':
+        qs = qs.filter(displayed_from__lte=rddate_max)
+
+    context = {'genre': genre_choice, 'queryset': qs}
+
+    return render(request, 'all_books/more_search.html', context)

@@ -1,10 +1,9 @@
 {% extends "all_books/base.html" %}
 
-{% block content %}
+{% block content %}{% if user.profile.librarian %}
 provide some merit score based on how well the student was with the deadline and how good the conditioned book he has provided,
 <br>(give a score out of 100)
 <br><hr>
-    {% if user.profile.librarian %}
         {% load crispy_forms_tags %}
             <form method="post">
                 {% csrf_token %}
