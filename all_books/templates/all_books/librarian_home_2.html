@@ -27,11 +27,19 @@ requested till: {{ object.return_on }} <br>
 
 <br>
 <br>
-<form method="post">
-    {% csrf_token %}
-    {{form|crispy}}
-<input class="btn btn-outline-info" type="submit" value="Confirm">
-</form>
+{% if object.issue_request_status == "renewed" %}
+    <form method="post">
+        {% csrf_token %}
+        {{r_form|crispy}}
+            <input class="btn btn-outline-info" type="submit" value="Confirm">
+    </form>
+    {% elif object.issue_request_status == 'pending' %}
+    <form method="post">
+        {% csrf_token %}
+        {{i_form|crispy}}
+            <input class="btn btn-outline-info" type="submit" value="Confirm">
+    </form>
+{% endif %}
 
 {% else %}
     PLEASE LOG IN TO CONTINUE

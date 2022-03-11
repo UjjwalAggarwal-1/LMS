@@ -16,7 +16,9 @@
     <p><i>{{book_object.num_issues}} issued in the last 90 days</i></p>
 {% endif %}
 {% if user.is_authenticated %}
-    {% if not user.profile.librarian %}
+    {% if user.profile.librarian %}
+        <a  class="btn btn-outline-info" href="{% url 'update_book' book_object.id %}">Update</a>
+    {% elif not user.profile.librarian %}
         {% if book_object.quantity > 0 %}
             <a  class="btn btn-outline-info" href="{% url 'book_request' book_object.id %}">Issue</a>
         {%endif%}

@@ -20,9 +20,16 @@ class AddBookForm(forms.ModelForm):
         exclude = ('availability',)
 
 
-class RequestDecisionForm(forms.Form):
+class IssueRequestDecisionForm(forms.Form):
     issue_request_status = forms.ChoiceField(choices=[
-        ('issued', 'Approve request'), ('rejected', 'Reject'), ('renewed', 'Renew Request')
+        ('issued', 'Approve request'), ('rejected', 'Reject')
+    ])
+    reject_request = forms.CharField(max_length=300, required=False)
+
+
+class RenewRequestDecisionForm(forms.Form):
+    issue_request_status = forms.ChoiceField(choices=[
+        ('renewed', 'Renew Request'), ('rejected', 'Reject')
     ])
     reject_request = forms.CharField(max_length=300, required=False)
 

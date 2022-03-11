@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import StuProfileUpdateForm, LibProfileUpdateForm
 from django.contrib.auth.decorators import login_required
-from all_books.models import Issue
 
 
 @login_required
@@ -16,7 +15,7 @@ def student_profile(request):
     else:
         p_form = StuProfileUpdateForm(instance=request.user.profile)
 
-    context = {'title': 'Profile', 'p_form': p_form}
+    context = {'title': 'PROFILE', 'p_form': p_form}
     return render(request, 'users/student_profile.html', context)
 
 
@@ -30,7 +29,7 @@ def librarian_profile(request):
             return redirect('librarian_home')
     else:
         p_form = LibProfileUpdateForm(instance=request.user.profile)
-    context = {'title': 'Profile', 'p_form': p_form}
+    context = {'title': 'PROFILE', 'p_form': p_form}
     return render(request, 'users/librarian_profile.html', context)
 
 
