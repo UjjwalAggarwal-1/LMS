@@ -1,7 +1,7 @@
 from django.urls import path
 from users.views import login_redirect_view
 from . import views
-from .views import BookListView, BookDetailView, book_request, return_book, search, more_search
+from .views import BookListView, BookDetailView, book_request, return_book, search, more_search, DeleteBook, DeleteMyRequest
 
 urlpatterns = [
     path('', BookListView.as_view(), name='all_books_home'),
@@ -15,4 +15,6 @@ urlpatterns = [
     path('score_return/<int:pk>/', views.ScoreTheReturn.as_view(), name='score_return'),
     path('search/', search, name='search'),
     path('more_search/', more_search, name='more_search'),
+    path('<int:pk>/delete_book/', DeleteBook.as_view(), name='delete_book'),
+    path('<int:pk>/delete_my_request/', DeleteMyRequest.as_view(), name='delete_my_request'),
 ]
