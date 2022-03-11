@@ -1,14 +1,16 @@
 {% extends "all_books/base.html" %}
 
-
 {%block content%}{% if user.profile.librarian %}
 <br>
 <h4>home page for books, library</h4>
 <br>
-<a href="{% url 'add_book' %}" > ADD BOOK </a>
-<br>
-<a href="{% url 'all_books_home' %}" > VIEW ALL BOOKS</a>
-<br>
+<div class="row">
+  <div class="col-md-2">
+  <a class="btn btn-outline-info" href="{% url 'add_book' %}" > ADD BOOK </a>
+    </div><div class="col-md-1">
+  <a class="btn btn-outline-info" href="{% url 'all_books_home' %}" > VIEW/UPDATE BOOKS</a>
+  </div>
+</div>
 <br>
 <hr>
 <h4>New Requests</h4>

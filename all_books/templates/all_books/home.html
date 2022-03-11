@@ -25,9 +25,7 @@ home page for books, library
 
     </div>
     <h2>
-      {% if user.profile.librarian %}
-        <a class="article-title" href="{% url 'update_book' book.id %}">title: {{ book.title }}</a>
-      {%else%}
+      {% if user.is_authenticated %}
         <a class="article-title" href="{% url 'book_detail' book.id %}">title: {{ book.title }}</a>
       {%endif%}
     </h2>

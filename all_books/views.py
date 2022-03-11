@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from .models import Book, Issue
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
-from .forms import AddBookForm, RequestDecisionForm, RequestBookForm, ReturnBookForm
+from .forms import AddBookForm, IssueRequestDecisionForm, RenewRequestDecisionForm, RequestBookForm, ReturnBookForm
 from django.utils import timezone
 
 
@@ -20,7 +20,7 @@ def add_book(request):
             return redirect('librarian_home')
     else:
         form = AddBookForm()
-        return render(request, 'all_books/add_book.html', {'form': form})
+        return render(request, 'all_books/add_book.html', {'form': form, 'title': 'ADD BOOK'})
 
 
 class BookListView(ListView):
@@ -31,13 +31,13 @@ class BookListView(ListView):
 
 
 def about(request):
-    return render(request, 'all_books/about.html', {'title': 'about_view'})
+    return render(request, 'all_books/about.html', {'title': 'ABOUT'})
 
 
 def BookDetailView(request, pk):
     book_obj = Book.objects.get(pk=pk)
     issue_obj = Issue.objects.filter(isbn_of_book=book_obj)
-    context = {'book_object': book_obj, 'issue_object': issue_obj}
+    context = {'book_object': book_obj, 'issue_object': issue_obj, 'title': 'BOOK DETAIL'}
     return render(request, 'all_books/book_detail.html', context)
 
 
@@ -85,33 +85,36 @@ def issue_request_listview(request):  # for librarians' page for viewing request
 
 def issue_request_detailview(request, issue_request_id):
     if request.method == 'POST':
-        form = RequestDecisionForm(request.POST, issue_request_id)
-        if form.is_valid():
-            issue_req_stat = form.cleaned_data.get('issue_request_status')
-            reject_request_data = form.cleaned_data.get('reject_request')
-            condtn = (reject_request_data == '')
-            if (issue_req_stat in {'issued', 'renewed'} and not condtn) or (issue_req_stat == 'rejected' and condtn):
-                raise forms.ValidationError("Please fill either reject reason or issue request status, but not both")
-            else:
-                old_obj = Issue.objects.get(id=issue_request_id)
-                old_obj.issue_request_status = issue_req_stat
-                reqbook = old_obj.isbn_of_book
-                if issue_req_stat == 'issued':
-                    reqbook.quantity -= 1
-                    old_obj.issued_on = datetime.datetime.now()
-                    reqbook.save()
-                elif issue_req_stat == 'renewed':
-                    old_obj.renewed_on = datetime.datetime.now()
+        i_form = IssueRequestDecisionForm(request.POST, issue_request_id)
+        r_form = RenewRequestDecisionForm(request.POST, issue_request_id)
+        if i_form.is_valid() or r_form.is_valid():
+            for form in {i_form, r_form}:
+                issue_req_stat = form.cleaned_data.get('issue_request_status')
+                reject_request_data = form.cleaned_data.get('reject_request')
+                condtn = (reject_request_data == '')
+                if (issue_req_stat in {'issued', 'renewed'} and not condtn) or (issue_req_stat == 'rejected' and condtn):
+                    raise forms.ValidationError("Please fill either reject reason or issue request status, but not both")
                 else:
-                    old_obj.reject_request = reject_request_data
-                old_obj.save()
-                return redirect('librarian_home')
+                    old_obj = Issue.objects.get(id=issue_request_id)
+                    old_obj.issue_request_status = issue_req_stat
+                    reqbook = old_obj.isbn_of_book
+                    if issue_req_stat == 'issued':
+                        reqbook.quantity -= 1
+                        old_obj.issued_on = datetime.datetime.now()
+                        reqbook.save()
+                    elif issue_req_stat == 'renewed':
+                        old_obj.renewed_on = datetime.datetime.now()
+                    else:
+                        old_obj.reject_request = reject_request_data
+                    old_obj.save()
+                    return redirect('librarian_home')
     else:
-        form = RequestDecisionForm()
+        i_form = IssueRequestDecisionForm()
+        r_form = RenewRequestDecisionForm()
 
     reqbook = Issue.objects.get(id=issue_request_id).isbn_of_book
     reqstudent = Issue.objects.get(id=issue_request_id).student
-    context = {'form': form, 'object': Issue.objects.get(id=issue_request_id),
+    context = {'i_form': i_form, 'r_form': r_form, 'object': Issue.objects.get(id=issue_request_id),
                'studiss': Issue.objects.filter(student=reqstudent, isbn_of_book=reqbook,
                                                issue_request_status='issued').count()}
 
@@ -139,7 +142,7 @@ def cover(request):
         trendisslist.append(maxiss)
         trendissdict.pop(maxiss)
 
-    context = {'title': 'cover_page',
+    context = {'title': 'COVER',
                'new_arrivals': Book.objects.all()[:7:-1],
                'trending_issues': trendisslist}
 
@@ -217,17 +220,20 @@ def more_search(request):
     rnotavailable = request.GET.get('notavailable')
     rdescorder = request.GET.get('descorder')
     rascorder = request.GET.get('ascorder')
+    rsummary = request.GET.get('summary')
 
     qs = Book.objects.all().order_by('title')
 
-    if rtitle is not None:
+    if rtitle != '' and rtitle is not None:
         qs = qs.filter(title__icontains=rtitle)
-    if risbn is not None:
+    if risbn != '' and risbn is not None:
         qs = qs.filter(isbn__icontains=risbn)
-    if rauthor is not None:
+    if rauthor != '' and rauthor is not None:
         qs = qs.filter(author__icontains=rauthor)
-    if rgenre is not None:
+    if rgenre != '' and rgenre is not None:
         qs = qs.filter(genre__icontains=rgenre)
+    if rsummary != '' and rsummary is not None:
+        qs = qs.filter(summary__icontains=rsummary)
 
     if rnotavailable:
         qs = qs.filter(quantity=0)
@@ -239,15 +245,15 @@ def more_search(request):
     if rascorder:
         qs = qs.order_by('published')
 
-    if rpdate_min != '':
+    if rpdate_min != '' and rpdate_min is not None:
         qs = qs.filter(published__gte=rpdate_min)
-    if rpdate_max != '':
+    if rpdate_max != '' and rpdate_max is not None:
         qs = qs.filter(published__lte=rpdate_max)
-    if rddate_min != '':
+    if rddate_min != '' and rddate_min is not None:
         qs = qs.filter(displayed_from__gte=rddate_min)
-    if rddate_max != '':
+    if rddate_max != '' and rddate_max is not None:
         qs = qs.filter(displayed_from__lte=rddate_max)
 
-    context = {'genre': genre_choice, 'queryset': qs}
+    context = {'genre': genre_choice, 'queryset': qs, 'title': 'SEARCH'}
 
     return render(request, 'all_books/more_search.html', context)

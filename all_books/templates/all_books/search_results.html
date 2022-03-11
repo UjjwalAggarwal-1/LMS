@@ -5,8 +5,15 @@
 <hr>
 <div class="row">
 <div class="col-md-6">
-<p> <i>{{ query }} matched in title</i></p>
-{% for book in book_objs_title %}
+<p> <i>{{ query }} searched in title</i></p>
+  {% if not book in book_objs_title %}
+  <div class="col-md-5">
+  <div class="alert alert-danger alert-dismissible fade show">
+  no matches
+  </div>
+  </div>
+  {% endif %}
+  {% for book in book_objs_title %}
 <article class="media content-section">
   <div class="media-body">
     <div class="article-metadata">
@@ -41,8 +48,15 @@
 </article>
 {% endfor %}
 <br><hr>
-<p> <i>{{ query }} matched in author</i></p>
-{% for book in book_objs_author %}
+<p> <i>{{ query }} searched in author</i></p>
+{% if not book in book_objs_author %}
+  <div class="col-md-5">
+  <div class="alert alert-danger alert-dismissible fade show">
+  no matches
+  </div>
+  </div>
+  {% endif %}
+  {% for book in book_objs_author %}
 <article class="media content-section">
   <div class="media-body">
     <div class="article-metadata">
@@ -77,7 +91,14 @@
 </article>
 {% endfor %}
 <br><hr>
-<p> <i>{{ query }} matched in ISBN</i></p>
+<p> <i>{{ query }} searched in ISBN</i></p>
+  {% if not book in book_objs_isbn %}
+  <div class="col-md-5">
+  <div class="alert alert-danger alert-dismissible fade show">
+  no matches
+  </div>
+  </div>
+  {% endif %}
 {% for book in book_objs_isbn %}
 <article class="media content-section">
   <div class="media-body">
@@ -119,7 +140,7 @@
 <hr>
 
 <div class="col-md-4">
-  <a href="{% url 'more_search' %}">more search options...</a>
+  <a href="{% url 'more_search' %}"><i>more search options...</i></a>
 </div>
 </div>
 
