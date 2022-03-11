@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.models import User
 from .models import Book, Issue
 from django.views.generic import ListView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView
 from .forms import AddBookForm, IssueRequestDecisionForm, RenewRequestDecisionForm, RequestBookForm, ReturnBookForm
 from django.utils import timezone
 
@@ -15,12 +15,22 @@ def add_book(request):
     if request.method == 'POST':
         form = AddBookForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'added successfully')
-            return redirect('librarian_home')
+            if not Book.objects.get(isbn=request.POST.get('isbn')):
+                form.save()
+                messages.success(request, 'added successfully')
+                return redirect('librarian_home')
+            else:
+                raise forms.ValidationError('Same ISBN exists')
+
     else:
         form = AddBookForm()
         return render(request, 'all_books/add_book.html', {'form': form, 'title': 'ADD BOOK'})
+
+
+class DeleteBook(DeleteView):
+    model = Book
+    template_name = 'all_books/delete_book.html'
+    success_url = reverse_lazy('librarian_home')
 
 
 class BookListView(ListView):
@@ -74,6 +84,12 @@ class IssueRequestStudentListView(ListView):  # personal requests of the student
     model = Issue
     template_name = 'all_books/issue_requests_student.html'
     context_object_name = 'issue_requests_student'
+
+
+class DeleteMyRequest(DeleteView):
+    model = Issue
+    template_name = 'all_books/delete_book.html'
+    success_url = reverse_lazy('issue_requests_student')
 
 
 def issue_request_listview(request):  # for librarians' page for viewing requests

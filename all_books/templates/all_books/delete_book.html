@@ -1,0 +1,12 @@
+{% extends "all_books/base.html" %}
+{%block content%} {% if user.is_authenticated %}
+{% load crispy_forms_tags %}
+    <form method="post">
+        {% csrf_token %}
+        {{form|crispy}}
+        confirm delete?
+            <input class="btn btn-outline-info" type="submit" value="Confirm">
+    </form>
+{% else %}
+    PLEASE LOG IN TO CONTINUE
+{% endif %}{%endblock content%}

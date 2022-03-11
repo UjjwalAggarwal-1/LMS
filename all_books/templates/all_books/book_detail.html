@@ -18,6 +18,8 @@
 {% if user.is_authenticated %}
     {% if user.profile.librarian %}
         <a  class="btn btn-outline-info" href="{% url 'update_book' book_object.id %}">Update</a>
+        <hr>
+        <a  class="btn btn-outline-info" href="{% url 'delete_book' book_object.id %}">Delete</a>
     {% elif not user.profile.librarian %}
         {% if book_object.quantity > 0 %}
             <a  class="btn btn-outline-info" href="{% url 'book_request' book_object.id %}">Issue</a>
@@ -27,6 +29,8 @@
 <br>
 <hr>
 <hr>
+<br>
+<h6>Reviews:</h6>
 <br>
 {% for issue in issue_object %}
 <p>{{issue.student}}, rating it a {{issue.rating}} out of 5, writes that <br> <i>{{ issue.review }} </i> </p>
