@@ -6,7 +6,7 @@
 <div class="row">
 <div class="col-md-6">
 <p> <i>{{ query }} searched in title</i></p>
-  {% if not book in book_objs_title %}
+  {% if not book_objs_title %}
   <div class="col-md-5">
   <div class="alert alert-danger alert-dismissible fade show">
   no matches
@@ -49,7 +49,7 @@
 {% endfor %}
 <br><hr>
 <p> <i>{{ query }} searched in author</i></p>
-{% if not book in book_objs_author %}
+{% if not book_objs_author %}
   <div class="col-md-5">
   <div class="alert alert-danger alert-dismissible fade show">
   no matches
@@ -92,7 +92,7 @@
 {% endfor %}
 <br><hr>
 <p> <i>{{ query }} searched in ISBN</i></p>
-  {% if not book in book_objs_isbn %}
+  {% if not book_objs_isbn %}
   <div class="col-md-5">
   <div class="alert alert-danger alert-dismissible fade show">
   no matches

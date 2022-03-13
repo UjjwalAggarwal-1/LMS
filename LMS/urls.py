@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from all_books.views import add_book, issue_request_listview, cover, issue_request_detailview
+from all_books.views import add_book, issue_request_listview, cover, request_decision, reject_request
 from users import views as users_views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -15,8 +15,9 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('student_profile/', users_views.student_profile, name='student_profile'),
     path('librarian_profile/', users_views.librarian_profile, name='librarian_profile'),
-    path('librarian_home/', issue_request_listview, name='librarian_home'),
-    path('librarian_home/<int:issue_request_id>/', issue_request_detailview, name='librarian_home_2'),
+    path('librarian_controls/', issue_request_listview, name='librarian_controls'),
+    path('librarian_controls/<int:issue_request_id>/', request_decision, name='request_decision'),
+    path('librarian_controls/<int:issue_request_id>/reject/', reject_request, name='reject_request'),
     path('add_book/', add_book, name='add_book'),
 ]
 

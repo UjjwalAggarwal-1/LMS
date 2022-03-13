@@ -8,15 +8,19 @@
 <div class="row">
 {% for issue_request in issue_requests_student %}
 {% if issue_request.issue_request_status == 'issued' %}
-<div class="col-md-4">
+<div class="col-md-3">
   <ul class="list-group">
       <article class="full content-section">
-          <div>book: {{ issue_request.isbn_of_book }}</div>
+          <div>book: {{ issue_request.book }}</div>
           <li class="list-group-item list-group-item-light">Approved</li>
           return date: {{ issue_request.return_on }}
           <br>
           <a href="{% url 'return_book' issue_request.id %}">
-            return/renew
+            return
+          </a>
+          ||
+          <a href="{% url 'renew_book' issue_request.id %}">
+            renew
           </a>
     </article>
   </ul>
@@ -29,10 +33,10 @@
 <div class="row">
 {% for issue_request in issue_requests_student %}
 {% if issue_request.issue_request_status == 'pending'%}
-<div class="col-md-4">
+<div class="col-md-3">
     <ul class="list-group">
       <article class="full content-section">
-          <div>book: {{ issue_request.isbn_of_book }}</div>
+          <div>book: {{ issue_request.book }}</div>
     <li class="list-group-item list-group-item-light">Pending</li>
       <a href="{% url 'delete_my_request' issue_request.id %}">Delete</a>
       </article>
@@ -46,10 +50,10 @@
 <div class="row">
 {% for issue_request in issue_requests_student %}
 {% if issue_request.issue_request_status == 'renewed' %}
-<div class="col-md-4">
+<div class="col-md-3">
     <ul class="list-group">
       <article class="full content-section">
-          <div>book: {{ issue_request.isbn_of_book }}</div>
+          <div>book: {{ issue_request.book }}</div>
     <li class="list-group-item list-group-item-light">Pending</li>
       </article>
   </ul>
@@ -62,12 +66,14 @@
 <div class="row">
 {% for issue_request in issue_requests_student %}
 {% if issue_request.issue_request_status == 'rejected' %}
-<div class="col-md-4">
+<div class="col-md-3">
 <ul class="list-group">
 <article class="full content-section">
-<div>book: {{ issue_request.isbn_of_book }}</div>
+<div>book: {{ issue_request.book }}</div>
 rejected with note: <br>
-<li class="list-group-item list-group-item-light">{{ issue_request.reject_request }}</li><br>  </article>
+<li class="list-group-item list-group-item-light">{{ issue_request.reject_request }}</li><br>
+<div>was requested on: {{ issue_request.requested_on }}</div>
+</article>
 </ul>
 </div>
 {%endif%}
@@ -81,14 +87,18 @@ rejected with note: <br>
 <div class="col-md-4">
 <ul class="list-group">
 <article class="full content-section">
-<div>book: {{ issue_request.isbn_of_book }}</div>
+<div>book: {{ issue_request.book }}</div>
 <div>Was issued on: {{ issue_request.issued_on }}</div>
 <div>Was Requested until: {{ issue_request.return_on }}</div>
 {% if not issue_request.renewed_on <= issue_request.issued_on %}
 <div>Was also Renewed on: {{ issue_request.renewed_on }}</div>
 {%endif%}
 <div>Was Returned on: {{ issue_request.returned_on }}</div>
+    {% if issue_request.score %}
 <div>Scored: {{ issue_request.score }} out of 100</div>
+    {% else %}
+<div>Not Yet Scored</div>
+    {% endif %}
 </article>
 </ul>
 </div>
