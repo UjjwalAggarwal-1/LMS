@@ -1,0 +1,15 @@
+{% extends "all_books/base.html" %}
+{%block content%}
+{% if user.profile.librarian %}
+{% load crispy_forms_tags %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ reject_form|crispy }}
+        <input class="btn btn-outline-info" type="submit" value="Confirm">
+</form>
+
+{% else %}
+    PLEASE LOG IN TO CONTINUE
+{% endif %}
+{%endblock content%}

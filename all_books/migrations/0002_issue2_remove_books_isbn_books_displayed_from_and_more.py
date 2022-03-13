@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='issue2',
-            name='isbn_of_book',
+            name='book',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='all_books.books'),
         ),
         migrations.AddField(

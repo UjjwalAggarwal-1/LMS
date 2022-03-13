@@ -28,16 +28,30 @@ class Book(models.Model):
     quantity = models.PositiveIntegerField()
     published = models.DateField(default=datetime.date.today())
 
-    def __str__(self):
-        return self.title
-
     @property
     def num_issues(self):
         count = 0
-        for issobj in Issue.objects.filter(isbn_of_book=self):
+        for issobj in Issue.objects.filter(book=self):
             if issobj.issued_on >= (timezone.now() - timezone.timedelta(days=90)):
                 count += 1
-        return '%d' % count
+        return count
+
+    @property
+    def unique_num_issues(self):
+        lastmonth = timezone.now() - timezone.timedelta(days=30)
+        book = self
+        count = 0
+        student_list = []
+        for issobj in Issue.objects.filter(book=book):
+            if issobj.issued_on >= lastmonth:
+                if issobj.student not in student_list:
+                    count += 1
+                    student_list.append(issobj.student)
+
+        return count
+
+    def __str__(self):
+        return self.title
 
 
 status_choices = [('pending', 'Pending'), ('issued', 'Issued'), ('returned', 'Returned'), ('rejected', 'Rejected'), ('renewed', 'Renewed')]
@@ -45,19 +59,18 @@ rating_choices = [(0, 'No Rating'), (1, 'Poor'), (2, 'Average'), (3, 'Good'), (4
 
 
 class Issue(models.Model):
-    isbn_of_book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     issue_request_status = models.CharField(max_length=10, choices=status_choices, default='pending', null=True, blank=True)
     reject_request = models.CharField(max_length=300, null=True, blank=True)
     return_on = models.DateTimeField(null=True, default=datetime.datetime.now() + datetime.timedelta(days=20))
     issued_on = models.DateTimeField(blank=True, null=True, default=datetime.datetime.now())
+    requested_on = models.DateTimeField(null=True, default=datetime.datetime.now())
     returned_on = models.DateTimeField(null=True, default=datetime.datetime.now())
     renewed_on = models.DateTimeField(null=True, default=datetime.datetime.now())
     rating = models.IntegerField(choices=rating_choices, default=0, blank=True, null=True)
     review = models.TextField(null=True, blank=True)
-    score = models.IntegerField(null=True, blank=True, default=0)
+    score = models.PositiveIntegerField(null=True, blank=True, default=0)
 
     def __str__(self):
-        return self.isbn_of_book.title, self.student.username
-
-
+        return self.book.title

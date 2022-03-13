@@ -20,11 +20,8 @@ class AddBookForm(forms.ModelForm):
         exclude = ('availability',)
 
 
-class IssueRequestDecisionForm(forms.Form):
-    issue_request_status = forms.ChoiceField(choices=[
-        ('issued', 'Approve request'), ('rejected', 'Reject')
-    ])
-    reject_request = forms.CharField(max_length=300, required=False)
+class RejectRequestForm(forms.Form):
+    reject_reason = forms.CharField(max_length=300)
 
 
 class RenewRequestDecisionForm(forms.Form):
@@ -35,15 +32,16 @@ class RenewRequestDecisionForm(forms.Form):
 
 
 class ReturnBookForm(forms.Form):
-    now = datetime.date.today()
-    twenty_days = datetime.timedelta(days=20)
-
-    issue_request_status = forms.ChoiceField(choices=[('returned', 'Return'), ('renewed', 'Renew')])
-    request_renewal_till = forms.DateField(widget=django.forms.DateInput(attrs=
-                                                                         {'type': 'date', 'min': now,
-                                                                          'max': now + twenty_days}),
-                                           required=False)
     rating = forms.ChoiceField(choices=[(0, 'No Rating'), (1, 'Poor'), (2, 'Average'),
                                         (3, 'Good'), (4, 'Very Good'), (5, 'Excellent')],
                                required=False)
     review = forms.CharField(widget=forms.Textarea(), required=False)
+
+
+class RenewBookForm(forms.Form):
+    now = datetime.date.today()
+    twenty_days = datetime.timedelta(days=20)
+    request_renewal_till = forms.DateField(widget=django.forms.DateInput(attrs=
+                                                                         {'type': 'date', 'min': now,
+                                                                          'max': now + twenty_days}),
+                                           required=False)

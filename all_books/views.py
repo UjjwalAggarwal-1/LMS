@@ -1,24 +1,23 @@
 import datetime
+import operator
 from django import forms
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.contrib.auth.models import User
 from .models import Book, Issue
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView, DeleteView
-from .forms import AddBookForm, IssueRequestDecisionForm, RenewRequestDecisionForm, RequestBookForm, ReturnBookForm
-from django.utils import timezone
+from .forms import AddBookForm, RejectRequestForm, RequestBookForm, RenewBookForm, ReturnBookForm
 
 
 def add_book(request):
     if request.method == 'POST':
         form = AddBookForm(request.POST)
         if form.is_valid():
-            if not Book.objects.get(isbn=request.POST.get('isbn')):
+            if not Book.objects.filter(isbn=request.POST.get('isbn')):
                 form.save()
                 messages.success(request, 'added successfully')
-                return redirect('librarian_home')
+                return redirect('librarian_controls')
             else:
                 raise forms.ValidationError('Same ISBN exists')
 
@@ -30,7 +29,7 @@ def add_book(request):
 class DeleteBook(DeleteView):
     model = Book
     template_name = 'all_books/delete_book.html'
-    success_url = reverse_lazy('librarian_home')
+    success_url = reverse_lazy('librarian_controls')
 
 
 class BookListView(ListView):
@@ -44,15 +43,15 @@ def about(request):
     return render(request, 'all_books/about.html', {'title': 'ABOUT'})
 
 
-def BookDetailView(request, pk):
+def book_detail(request, pk):
     book_obj = Book.objects.get(pk=pk)
-    issue_obj = Issue.objects.filter(isbn_of_book=book_obj)
+    issue_obj = Issue.objects.filter(book=book_obj)
     context = {'book_object': book_obj, 'issue_object': issue_obj, 'title': 'BOOK DETAIL'}
     return render(request, 'all_books/book_detail.html', context)
 
 
-def librarian_home(request):
-    return render(request, 'all_books/librarian_home.html')
+def librarian_controls(request):
+    return render(request, 'all_books/librarian_controls.html')
 
 
 class BookUpdateView(UpdateView):
@@ -60,7 +59,7 @@ class BookUpdateView(UpdateView):
     fields = ['title', 'author', 'publisher', 'published', 'isbn', 'quantity', 'genre', 'summary', 'location',
               'displayed_from']
     template_name = 'all_books/update_book.html'
-    success_url = reverse_lazy('librarian_home')
+    success_url = reverse_lazy('librarian_controls')
 
 
 def book_request(request, pk):
@@ -68,11 +67,11 @@ def book_request(request, pk):
         form = RequestBookForm(request.POST, pk)
         if form.is_valid():
             return_on = form.cleaned_data.get('return_on')
-            student_name = request.user.username
+            # student_name = request.user.username
             book_object = Book.objects.get(pk=pk)
-            student_object = User.objects.get(username=student_name)
-            issue_inst = Issue(isbn_of_book=book_object, student=student_object, return_on=return_on)
-            issue_inst.save()
+            student_object = request.user
+            issue_inst = Issue.objects.create(book=book_object, student=student_object, return_on=return_on)
+            # issue_inst.save()
             messages.success(request, 'book was requested, please wait for approval')
             return redirect('all_books_home')
     else:
@@ -84,6 +83,7 @@ class IssueRequestStudentListView(ListView):  # personal requests of the student
     model = Issue
     template_name = 'all_books/issue_requests_student.html'
     context_object_name = 'issue_requests_student'
+    ordering = ['return_on']
 
 
 class DeleteMyRequest(DeleteView):
@@ -96,71 +96,53 @@ def issue_request_listview(request):  # for librarians' page for viewing request
     context_object = Issue.objects.all()
     context = {'all_issue_requests': context_object}
 
-    return render(request, 'all_books/librarian_home.html', context)
+    return render(request, 'all_books/librarian_controls.html', context)
 
 
-def issue_request_detailview(request, issue_request_id):
-    if request.method == 'POST':
-        i_form = IssueRequestDecisionForm(request.POST, issue_request_id)
-        r_form = RenewRequestDecisionForm(request.POST, issue_request_id)
-        if i_form.is_valid() or r_form.is_valid():
-            for form in {i_form, r_form}:
-                issue_req_stat = form.cleaned_data.get('issue_request_status')
-                reject_request_data = form.cleaned_data.get('reject_request')
-                condtn = (reject_request_data == '')
-                if (issue_req_stat in {'issued', 'renewed'} and not condtn) or (issue_req_stat == 'rejected' and condtn):
-                    raise forms.ValidationError("Please fill either reject reason or issue request status, but not both")
-                else:
-                    old_obj = Issue.objects.get(id=issue_request_id)
-                    old_obj.issue_request_status = issue_req_stat
-                    reqbook = old_obj.isbn_of_book
-                    if issue_req_stat == 'issued':
-                        reqbook.quantity -= 1
-                        old_obj.issued_on = datetime.datetime.now()
-                        reqbook.save()
-                    elif issue_req_stat == 'renewed':
-                        old_obj.renewed_on = datetime.datetime.now()
-                    else:
-                        old_obj.reject_request = reject_request_data
-                    old_obj.save()
-                    return redirect('librarian_home')
-    else:
-        i_form = IssueRequestDecisionForm()
-        r_form = RenewRequestDecisionForm()
-
-    reqbook = Issue.objects.get(id=issue_request_id).isbn_of_book
+def request_decision(request, issue_request_id):
+    reqbook = Issue.objects.get(id=issue_request_id).book
     reqstudent = Issue.objects.get(id=issue_request_id).student
-    context = {'i_form': i_form, 'r_form': r_form, 'object': Issue.objects.get(id=issue_request_id),
-               'studiss': Issue.objects.filter(student=reqstudent, isbn_of_book=reqbook,
+
+    if request.method == 'POST':
+
+        iss_obj = Issue.objects.get(id=issue_request_id)
+        iss_obj.issue_request_status = 'issued'
+        iss_obj.issued_on = datetime.datetime.now()
+        reqbook.quantity -= 1
+        iss_obj.save()
+        reqbook.save()
+        return redirect('librarian_controls')
+
+    context = {'object': Issue.objects.get(id=issue_request_id),
+               'studiss': Issue.objects.filter(student=reqstudent, book=reqbook,
                                                issue_request_status='issued').count()}
 
-    return render(request, 'all_books/librarian_home_2.html', context)
+    return render(request, 'all_books/request_decision.html', context)
+
+
+def reject_request(request, issue_request_id):
+    if request.method == 'POST':
+        form = RejectRequestForm(request.POST, issue_request_id)
+        if form.is_valid():
+            iss_obj = Issue.objects.get(pk=issue_request_id)
+            iss_obj.issue_request_status = 'rejected'
+            iss_obj.reject_request = form.cleaned_data.get('reject_reason')
+            iss_obj.save()
+            return redirect('librarian_controls')
+    else:
+        reject_form = RejectRequestForm()
+
+    context = {'reject_form': reject_form}
+    return render(request, 'all_books/reject_request.html', context)
 
 
 def cover(request):
-    lastmonth = timezone.now() - timezone.timedelta(days=30)
-    trendissdict = {}
-
-    for book in Book.objects.all():
-        count = 0
-        student_list = []
-        for issobj in Issue.objects.filter(isbn_of_book=book):
-            if issobj.issued_on >= lastmonth:
-                if issobj.student not in student_list:
-                    count += 1
-                    student_list.append(issobj.student)
-        trendissdict[book.title] = count
-
-    trendisslist = []
-    for i in range(3 if len(trendisslist) <= 3 else 12):
-        maxcnt = max(trendissdict.values())
-        maxiss = list(trendissdict.keys())[list(trendissdict.values()).index(maxcnt)]
-        trendisslist.append(maxiss)
-        trendissdict.pop(maxiss)
+    qs = Book.objects.all()
+    ordered = sorted(qs, key=operator.attrgetter('unique_num_issues'))
 
     context = {'title': 'COVER',
                'new_arrivals': Book.objects.all()[:7:-1],
-               'trending_issues': trendisslist}
+               'trending_issues': ordered[::-1]}
 
     return render(request, 'all_books/cover.html', context)
 
@@ -169,27 +151,18 @@ def return_book(request, pk):
     if request.method == 'POST':
         form = ReturnBookForm(request.POST, pk)
         if form.is_valid():
-            issue_req_stat = form.cleaned_data.get('issue_request_status')
-            renewed_request = form.cleaned_data.get('request_renewal_till')
             review = form.cleaned_data.get('review')
             rating = form.cleaned_data.get('rating')
             old_obj = Issue.objects.get(pk=pk)
-            old_obj.issue_request_status = issue_req_stat
-            if (issue_req_stat == 'renewed' and renewed_request is None) or (
-                    issue_req_stat == 'returned' and renewed_request is not None):
-                raise forms.ValidationError("invalid combination of data")
-            else:
-                if issue_req_stat == 'returned':
-                    old_obj.returned_on = datetime.datetime.now()
-                    book = old_obj.isbn_of_book
-                    book.quantity += 1
-                    book.save()
-                elif issue_req_stat == 'renewed':
-                    old_obj.return_on = renewed_request
-                if review is not None:
-                    old_obj.review = review
-                if rating is not None:
-                    old_obj.rating = rating
+            old_obj.issue_request_status = 'returned'
+            old_obj.returned_on = datetime.datetime.now()
+            book = old_obj.book
+            book.quantity += 1
+            book.save()
+            if review is not None:
+                old_obj.review = review
+            if rating is not None:
+                old_obj.rating = rating
             old_obj.save()
             return redirect('issue_requests_student')
     else:
@@ -197,11 +170,28 @@ def return_book(request, pk):
     return render(request, 'all_books/return_book.html', {'form': form})
 
 
+def renew_book(request, pk):
+    if request.method == 'POST':
+        form = RenewBookForm(request.POST, pk)
+        if form.is_valid():
+            old_obj = Issue.objects.get(pk=pk)
+            old_obj.issue_request_status = 'renewed'
+            old_obj.returned_on = datetime.datetime.now()
+            old_obj.save()
+            return redirect('issue_requests_student')
+        else:
+            form = RenewBookForm()
+            messages.warning(request, 'please fill out proper data')
+    else:
+        form = RenewBookForm()
+    return render(request, 'all_books/return_book.html', {'form': form})
+
+
 class ScoreTheReturn(UpdateView):
     model = Issue
     fields = ['score']
     template_name = 'all_books/score_return.html'
-    success_url = reverse_lazy('librarian_home')
+    success_url = reverse_lazy('librarian_controls')
 
 
 def search(request):
@@ -243,7 +233,7 @@ def more_search(request):
     if rtitle != '' and rtitle is not None:
         qs = qs.filter(title__icontains=rtitle)
     if risbn != '' and risbn is not None:
-        qs = qs.filter(isbn__icontains=risbn)
+        qs = qs.filter(isbn=risbn)
     if rauthor != '' and rauthor is not None:
         qs = qs.filter(author__icontains=rauthor)
     if rgenre != '' and rgenre is not None:

@@ -9,9 +9,10 @@ def student_profile(request):
     if request.method == 'POST':
         p_form = StuProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
         if p_form.is_valid():
-            p_form.save()
-            messages.success(request, '!!Your account is now updated!!')
-            return redirect('all_books_home')
+            if p_form.full_clean():
+                p_form.save()
+                messages.success(request, '!!Your account is now updated!!')
+                return redirect('all_books_home')
     else:
         p_form = StuProfileUpdateForm(instance=request.user.profile)
 
@@ -26,7 +27,7 @@ def librarian_profile(request):
         if p_form.is_valid():
             p_form.save()
             messages.success(request, '!!Your account is now updated!!')
-            return redirect('librarian_home')
+            return redirect('librarian_controls')
     else:
         p_form = LibProfileUpdateForm(instance=request.user.profile)
     context = {'title': 'PROFILE', 'p_form': p_form}
@@ -35,6 +36,6 @@ def librarian_profile(request):
 
 def login_redirect_view(request):
     if request.user.profile.librarian:
-        return redirect('librarian_home')
+        return redirect('librarian_controls')
     else:
         return redirect('all_books_home')

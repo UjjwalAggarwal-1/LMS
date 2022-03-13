@@ -16,34 +16,36 @@
 <h4>New Requests</h4>
 {% for issue_request in all_issue_requests %}
 {% if issue_request.issue_request_status == 'pending' %}
+<a href="{% url 'request_decision' issue_request.id %}" >
 <article class="media content-section">
   <div class="media-body">
     <div class="article-metadata">
-      <p>book name: {{ issue_request.isbn_of_book }}</p>
+      <p>book name: {{ issue_request.book }}</p>
+      <p>student name: {{ issue_request.student.profile.bits_id }}</p>
       <p>student name: {{ issue_request.student }}</p>
     </div>
-    <a href="{% url 'librarian_home_2' issue_request.id %}" >
     <p class="article-content">return date: {{ issue_request.return_on }}</p>
-  </a>
   </div>
 </article>
+</a>
 {% endif %}
 {% endfor %}
 <br><hr>
 <h4>Renewal Requests</h4>
 {% for issue_request in all_issue_requests %}
 {% if issue_request.issue_request_status == 'renewed' %}
+<a href="{% url 'request_decision' issue_request.id %}" >
 <article class="media content-section">
   <div class="media-body">
     <div class="article-metadata">
-      <p>book name: {{ issue_request.isbn_of_book }}</p>
+      <p>book name: {{ issue_request.book }}</p>
+      <p>student name: {{ issue_request.student.profile.bits_id }}</p>
       <p>student name: {{ issue_request.student }}</p>
     </div>
-    <a href="{% url 'librarian_home_2' issue_request.id %}" >
     <p class="article-content">return date: {{ issue_request.return_on }}</p>
-  </a>
   </div>
 </article>
+</a>
 {% endif %}
 {% endfor %}
 <br><hr>
@@ -51,17 +53,18 @@
 {% for issue_request in all_issue_requests %}
 {% if issue_request.issue_request_status == 'returned' %}
 {% if issue_request.score == 0 %}
+<a href="{% url 'score_return' issue_request.id %}" >
 <article class="media content-section">
   <div class="media-body">
     <div class="article-metadata">
-      <p>book name: {{ issue_request.isbn_of_book }}</p>
+      <p>book name: {{ issue_request.book }}</p>
+      <p>student name: {{ issue_request.student.profile.bits_id }}</p>
       <p>student name: {{ issue_request.student }}</p>
     </div>
-    <a href="{% url 'score_return' issue_request.id %}" >
     <p class="article-content">returned on date: {{ issue_request.returned_on }}</p>
-  </a>
-  </div>
-</article>
+    </div>
+  </article>
+</a>
 {% endif %}
 {% endif %}
 {% endfor %}

@@ -28,7 +28,7 @@
           <div class="navbar-nav mr-auto">
               {% if user.is_authenticated %}
                   {% if user.profile.librarian %}
-                    <a class="nav-item nav-link" href="/librarian_home">Controls</a>
+                    <a class="nav-item nav-link" href="/librarian_controls">Controls</a>
                   {% else %}
                     <a class="nav-item nav-link" href="/all_books">Catalogue</a>
                   {% endif %}
