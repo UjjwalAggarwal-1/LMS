@@ -3,30 +3,31 @@ from django.contrib.auth.models import User
 import datetime
 from django.utils import timezone
 
-genre_choice = [('Action/Adventure', 'Action/Adventure'), ('Classics', 'Classics'),
-                ('Comic Book/Graphic Novel', 'Comic Book/Graphic Novel'), ('Folklore', 'Folklore'),
-                ('Detective/Mystery', 'Detective/Mystery'), ('Fantasy', 'Fantasy'),
-                ('Historical Fiction', 'Historical Fiction'), ('Horror', 'Horror'),
-                ('Literary Fiction', 'Literary Fiction'), ('Romance', 'Romance'),
-                ('Science Fiction (Sci-Fi)', 'Science Fiction (Sci-Fi)'), ('Short Stories', 'Short Stories'),
-                ('Suspense/Thrillers', 'Suspense/Thrillers'),
-                ('Biographies/Autobiographies', 'Biographies/Autobiographies'),
-                ('Cookbooks', 'Cookbooks'), ('History', 'History'),
-                ('Poetry', 'Poetry'), ('Self-Growth', 'Self-Growth'), ('True Crime', 'True Crime')]
+genre_choice = ('Action', 'Adventure', 'Classics', 'Comic Book', 'Graphic Novel', 'Folklore', 'Detective',
+                'Horror', 'Literary Fiction', 'Romance', 'Science Fiction', 'Short Stories',
+                'Suspense', 'Thrillers', 'Biographies', 'Autobiographies', 'Cookbooks', 'History', 'Poetry',
+                'Mystery', 'Fantasy', 'Self Growth', 'True Crime')
+
+
+class Genre(models.Model):
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
 
 
 class Book(models.Model):
-    title = models.CharField(max_length=100, default='none')
-    author = models.CharField(max_length=50, default='none')
-    publisher = models.CharField(max_length=50, default='none')
-    genre = models.CharField(max_length=20, default='un-classified')
-    summary = models.CharField(max_length=500, default='none')
-    isbn = models.CharField(max_length=20)
+    title = models.CharField(max_length=100)
+    author = models.CharField(max_length=50)
+    isbn = models.IntegerField(verbose_name='ISBN')
+    publisher = models.CharField(max_length=50)
+    genre = models.ManyToManyField(Genre)
     location = models.CharField(max_length=20, default='unknown')
     displayed_from = models.DateTimeField(blank=True, null=True, default=datetime.datetime.now())
     availability = models.ManyToManyField(User, through='Issue')
     quantity = models.PositiveIntegerField()
     published = models.DateField(default=datetime.date.today())
+    summary = models.CharField(max_length=500)
 
     @property
     def num_issues(self):
@@ -47,21 +48,26 @@ class Book(models.Model):
                 if issobj.student not in student_list:
                     count += 1
                     student_list.append(issobj.student)
-
         return count
+
+    @property
+    def genres_stringed(self):
+        return '|'.join(self.genre.all().values_list('name', flat=True))
 
     def __str__(self):
         return self.title
 
 
-status_choices = [('pending', 'Pending'), ('issued', 'Issued'), ('returned', 'Returned'), ('rejected', 'Rejected'), ('renewed', 'Renewed')]
+status_choices = [('pending', 'Pending'), ('issued', 'Issued'), ('returned', 'Returned'), ('rejected', 'Rejected'),
+                  ('renewed', 'Renewed')]
 rating_choices = [(0, 'No Rating'), (1, 'Poor'), (2, 'Average'), (3, 'Good'), (4, 'Very Good'), (5, 'Excellent')]
 
 
 class Issue(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     student = models.ForeignKey(User, on_delete=models.CASCADE)
-    issue_request_status = models.CharField(max_length=10, choices=status_choices, default='pending', null=True, blank=True)
+    status = models.CharField(max_length=10, choices=status_choices, default='pending', null=True,
+                              blank=True)
     reject_request = models.CharField(max_length=300, null=True, blank=True)
     return_on = models.DateTimeField(null=True, default=datetime.datetime.now() + datetime.timedelta(days=20))
     issued_on = models.DateTimeField(blank=True, null=True, default=datetime.datetime.now())

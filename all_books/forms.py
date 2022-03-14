@@ -18,6 +18,31 @@ class AddBookForm(forms.ModelForm):
         model = Book
         fields = '__all__'
         exclude = ('availability',)
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'Title ...'}),
+            'isbn': forms.TextInput(attrs={'placeholder': 'ISBN ...'}),
+            'author': forms.TextInput(attrs={'placeholder': 'Author ...'}),
+            'summary': forms.Textarea(attrs={'placeholder': 'Enter summary here'}),
+            'displayed_from': forms.widgets.DateInput(attrs={'type': 'date', 'min': datetime.date.today()}),
+            'published': forms.widgets.DateInput(attrs={'type': 'date'}),
+            'genre': forms.CheckboxSelectMultiple()
+        }
+
+
+class UpdateBookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = '__all__'
+        exclude = ('availability',)
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'Title ...'}),
+            'isbn': forms.TextInput(attrs={'placeholder': 'ISBN ...'}),
+            'author': forms.TextInput(attrs={'placeholder': 'Author ...'}),
+            'summary': forms.Textarea(attrs={'placeholder': 'Enter summary here'}),
+            'displayed_from': forms.widgets.DateInput(attrs={'type': 'date', 'min': datetime.date.today()}),
+            'published': forms.widgets.DateInput(attrs={'type': 'date'}),
+            'genre': forms.CheckboxSelectMultiple()
+        }
 
 
 class RejectRequestForm(forms.Form):

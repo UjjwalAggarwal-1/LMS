@@ -14,8 +14,7 @@
 <br>
 <hr>
 <h4>New Requests</h4>
-{% for issue_request in all_issue_requests %}
-{% if issue_request.issue_request_status == 'pending' %}
+{% for issue_request in pending_requests %}
 <a href="{% url 'request_decision' issue_request.id %}" >
 <article class="media content-section">
   <div class="media-body">
@@ -28,12 +27,10 @@
   </div>
 </article>
 </a>
-{% endif %}
 {% endfor %}
 <br><hr>
 <h4>Renewal Requests</h4>
-{% for issue_request in all_issue_requests %}
-{% if issue_request.issue_request_status == 'renewed' %}
+{% for issue_request in renewed_requests %}
 <a href="{% url 'request_decision' issue_request.id %}" >
 <article class="media content-section">
   <div class="media-body">
@@ -46,12 +43,10 @@
   </div>
 </article>
 </a>
-{% endif %}
 {% endfor %}
 <br><hr>
 <h4>Returned Books (to be scored)</h4>
-{% for issue_request in all_issue_requests %}
-{% if issue_request.issue_request_status == 'returned' %}
+{% for issue_request in returned_requests %}
 {% if issue_request.score == 0 %}
 <a href="{% url 'score_return' issue_request.id %}" >
 <article class="media content-section">
@@ -65,7 +60,6 @@
     </div>
   </article>
 </a>
-{% endif %}
 {% endif %}
 {% endfor %}
 
