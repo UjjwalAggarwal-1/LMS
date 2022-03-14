@@ -1,13 +1,14 @@
 import datetime
 import operator
-from django import forms
+
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from .models import Book, Issue
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView, DeleteView
-from .forms import AddBookForm, RejectRequestForm, RequestBookForm, RenewBookForm, ReturnBookForm
+
+from .forms import AddBookForm, RejectRequestForm, RequestBookForm, RenewBookForm, ReturnBookForm, UpdateBookForm
+from .models import Book, Issue, Genre
 
 
 def add_book(request):
@@ -18,9 +19,10 @@ def add_book(request):
                 form.save()
                 messages.success(request, 'added successfully')
                 return redirect('librarian_controls')
-            else:
-                raise forms.ValidationError('Same ISBN exists')
-
+            elif Book.objects.filter(isbn=request.POST.get('isbn')):
+                form = AddBookForm()
+                messages.warning(request, 'a book with same isbn was previously added')
+                return render(request, 'all_books/add_book.html', {'form': form, 'title': 'ADD BOOK'})
     else:
         form = AddBookForm()
         return render(request, 'all_books/add_book.html', {'form': form, 'title': 'ADD BOOK'})
@@ -51,13 +53,17 @@ def book_detail(request, pk):
 
 
 def librarian_controls(request):
-    return render(request, 'all_books/librarian_controls.html')
+    context = {'title': 'Controls',
+               'pending_requests': Issue.objects.filter(status='pending'),
+               'renewed_requests': Issue.objects.filter(status='renewed'),
+               'returned_requests': Issue.objects.filter(status='returned'),
+               }
+    return render(request, 'all_books/librarian_controls.html', context)
 
 
 class BookUpdateView(UpdateView):
     model = Book
-    fields = ['title', 'author', 'publisher', 'published', 'isbn', 'quantity', 'genre', 'summary', 'location',
-              'displayed_from']
+    form_class = UpdateBookForm
     template_name = 'all_books/update_book.html'
     success_url = reverse_lazy('librarian_controls')
 
@@ -67,11 +73,9 @@ def book_request(request, pk):
         form = RequestBookForm(request.POST, pk)
         if form.is_valid():
             return_on = form.cleaned_data.get('return_on')
-            # student_name = request.user.username
             book_object = Book.objects.get(pk=pk)
             student_object = request.user
             issue_inst = Issue.objects.create(book=book_object, student=student_object, return_on=return_on)
-            # issue_inst.save()
             messages.success(request, 'book was requested, please wait for approval')
             return redirect('all_books_home')
     else:
@@ -79,11 +83,14 @@ def book_request(request, pk):
     return render(request, 'all_books/request_book.html', {'form': form})
 
 
-class IssueRequestStudentListView(ListView):  # personal requests of the student!
-    model = Issue
-    template_name = 'all_books/issue_requests_student.html'
-    context_object_name = 'issue_requests_student'
-    ordering = ['return_on']
+def issue_requests_student(request):  # personal requests of the student!
+    io = Issue.objects
+    context = {'pending_requests': io.filter(issue_request_status='pending').order_by('-requested_on', 'issued_on'),
+               'issued_requests': io.filter(issue_request_status='issued').order_by('return_on', 'issued_on'),
+               'returned_requests': io.filter(issue_request_status='returned').order_by('-returned_on', 'issued_on'),
+               'rejected_requests': io.filter(issue_request_status='rejected').order_by('-requested_on'),
+               'renewed_requests': io.filter(issue_request_status='renewed').order_by('-renewed_on', 'issued_on')}
+    return render(request, 'all_books/issue_requests_student.html', context)
 
 
 class DeleteMyRequest(DeleteView):
@@ -92,7 +99,7 @@ class DeleteMyRequest(DeleteView):
     success_url = reverse_lazy('issue_requests_student')
 
 
-def issue_request_listview(request):  # for librarians' page for viewing requests
+def all_request_listview(request):  # for librarians' page for viewing requests
     context_object = Issue.objects.all()
     context = {'all_issue_requests': context_object}
 
@@ -106,7 +113,7 @@ def request_decision(request, issue_request_id):
     if request.method == 'POST':
 
         iss_obj = Issue.objects.get(id=issue_request_id)
-        iss_obj.issue_request_status = 'issued'
+        iss_obj.status = 'issued'
         iss_obj.issued_on = datetime.datetime.now()
         reqbook.quantity -= 1
         iss_obj.save()
@@ -125,7 +132,7 @@ def reject_request(request, issue_request_id):
         form = RejectRequestForm(request.POST, issue_request_id)
         if form.is_valid():
             iss_obj = Issue.objects.get(pk=issue_request_id)
-            iss_obj.issue_request_status = 'rejected'
+            iss_obj.status = 'rejected'
             iss_obj.reject_request = form.cleaned_data.get('reject_reason')
             iss_obj.save()
             return redirect('librarian_controls')
@@ -138,11 +145,10 @@ def reject_request(request, issue_request_id):
 
 def cover(request):
     qs = Book.objects.all()
-    ordered = sorted(qs, key=operator.attrgetter('unique_num_issues'))
-
+    ordered_qs = sorted(qs, key=operator.attrgetter('unique_num_issues'))
     context = {'title': 'COVER',
-               'new_arrivals': Book.objects.all()[:7:-1],
-               'trending_issues': ordered[::-1]}
+               'new_arrivals': Book.objects.all().order_by('displayed_from')[::-1][:7],
+               'trending_issues': ordered_qs[::-1][:6]}
 
     return render(request, 'all_books/cover.html', context)
 
@@ -154,7 +160,7 @@ def return_book(request, pk):
             review = form.cleaned_data.get('review')
             rating = form.cleaned_data.get('rating')
             old_obj = Issue.objects.get(pk=pk)
-            old_obj.issue_request_status = 'returned'
+            old_obj.status = 'returned'
             old_obj.returned_on = datetime.datetime.now()
             book = old_obj.book
             book.quantity += 1
@@ -175,7 +181,7 @@ def renew_book(request, pk):
         form = RenewBookForm(request.POST, pk)
         if form.is_valid():
             old_obj = Issue.objects.get(pk=pk)
-            old_obj.issue_request_status = 'renewed'
+            old_obj.status = 'renewed'
             old_obj.returned_on = datetime.datetime.now()
             old_obj.save()
             return redirect('issue_requests_student')
@@ -209,11 +215,6 @@ def search(request):
 
 
 def more_search(request):
-    genre_choice = ['Action', 'Adventure', 'Classics', 'Comic Book', 'Graphic Novel', 'Folklore', 'Detective',
-                    'Horror', 'Literary Fiction', 'Romance', 'Science Fiction', 'Short Stories',
-                    'Suspense', 'Thrillers', 'Biographies', 'Autobiographies', 'Cookbooks', 'History', 'Poetry',
-                    'Mystery', 'Fantasy', 'Self Growth', 'True Crime']
-
     rtitle = request.GET.get('title')
     risbn = request.GET.get('isbn')
     rauthor = request.GET.get('author')
@@ -237,7 +238,7 @@ def more_search(request):
     if rauthor != '' and rauthor is not None:
         qs = qs.filter(author__icontains=rauthor)
     if rgenre != '' and rgenre is not None:
-        qs = qs.filter(genre__icontains=rgenre)
+        qs = qs.filter(genre=rgenre)
     if rsummary != '' and rsummary is not None:
         qs = qs.filter(summary__icontains=rsummary)
 
@@ -260,6 +261,7 @@ def more_search(request):
     if rddate_max != '' and rddate_max is not None:
         qs = qs.filter(displayed_from__lte=rddate_max)
 
-    context = {'genre': genre_choice, 'queryset': qs, 'title': 'SEARCH'}
+    context = {'genre': Genre.objects.all(), 'queryset': qs, 'title': 'SEARCH'}
 
     return render(request, 'all_books/more_search.html', context)
+

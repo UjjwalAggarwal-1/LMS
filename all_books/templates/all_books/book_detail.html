@@ -3,28 +3,28 @@
 {% if user.is_authenticated %}
 
 <h1>{{ book_object.title }}</h1>
-        <hr> <br>
+<hr> <br>
 <p>by {{ book_object.author }}</p>
 <p>Publisher: {{ book_object.publisher }}</p>
 <p>ISBN code: {{book_object.isbn}}</p>
 <p>available quantity: {{book_object.quantity}}</p>
-<p>location: {{object.location}}</p>
-<p>genre: {{book_object.genre}}</p>
+<p>location: {{book_object.location}}</p>
+<p> genre: {{ book_object.genres_stringed }}</p>
 <p>available since: {{book_object.displayed_from}}</p>
 <p>{{book_object.summary}}</p>
 {% if book_object.num_issues >= 50 %}
-    <p><i>{{book_object.num_issues}} issued in the last 90 days</i></p>
+<p><i>{{book_object.num_issues}} issued in the last 90 days</i></p>
 {% endif %}
 {% if user.is_authenticated %}
-    {% if user.profile.librarian %}
-        <a  class="btn btn-outline-info" href="{% url 'update_book' book_object.id %}">Update</a>
-        <hr>
-        <a  class="btn btn-outline-info" href="{% url 'delete_book' book_object.id %}">Delete</a>
-    {% elif not user.profile.librarian %}
-        {% if book_object.quantity > 0 %}
-            <a  class="btn btn-outline-info" href="{% url 'book_request' book_object.id %}">Issue</a>
-        {%endif%}
-    {%endif%}
+{% if user.profile.librarian %}
+<a class="btn btn-outline-info" href="{% url 'update_book' book_object.id %}">Update</a>
+<hr>
+<a class="btn btn-outline-info" href="{% url 'delete_book' book_object.id %}">Delete</a>
+{% elif not user.profile.librarian %}
+{% if book_object.quantity > 0 %}
+<a class="btn btn-outline-info" href="{% url 'book_request' book_object.id %}">Issue</a>
+{%endif%}
+{%endif%}
 {%endif%}
 <br>
 <hr>
@@ -32,11 +32,14 @@
 <br>
 <h6>Reviews:</h6>
 <br>
+{% if not issue_objects %}
+no reviews yet
+{% endif %}
 {% for issue in issue_object %}
-<p>{{issue.student}}, rating it a {{issue.rating}} out of 5, writes that <br> <i>{{ issue.review }} </i> </p>
+<p>{{issue.student}}, rating it a {{issue.rating}} out of 5, writes that <br> <i>{{ issue.review }} </i></p>
 {% endfor %}
 
 {% else %}
-    PLEASE LOG IN TO CONTINUE
+PLEASE LOG IN TO CONTINUE
 {%endif %}
 {% endblock content %}

@@ -6,8 +6,7 @@
 
 <br><h4>Issued</h4> <br>
 <div class="row">
-{% for issue_request in issue_requests_student %}
-{% if issue_request.issue_request_status == 'issued' %}
+{% for issue_request in issued_requests %}
 <div class="col-md-3">
   <ul class="list-group">
       <article class="full content-section">
@@ -18,21 +17,19 @@
           <a href="{% url 'return_book' issue_request.id %}">
             return
           </a>
-          ||
+          <b> | </b>
           <a href="{% url 'renew_book' issue_request.id %}">
             renew
           </a>
     </article>
   </ul>
     </div>
-{% endif %}
 {% endfor %}
 </div>
 
 <br><br><h4>Pending</h4> <br>
 <div class="row">
-{% for issue_request in issue_requests_student %}
-{% if issue_request.issue_request_status == 'pending'%}
+{% for issue_request in pending_requests %}
 <div class="col-md-3">
     <ul class="list-group">
       <article class="full content-section">
@@ -42,14 +39,12 @@
       </article>
   </ul>
 </div>
-{% endif %}
 {% endfor %}
 </div>
 
 <br><br><h4>Pending (Renewal)</h4> <br>
 <div class="row">
-{% for issue_request in issue_requests_student %}
-{% if issue_request.issue_request_status == 'renewed' %}
+{% for issue_request in renewed_requests %}
 <div class="col-md-3">
     <ul class="list-group">
       <article class="full content-section">
@@ -58,14 +53,12 @@
       </article>
   </ul>
 </div>
-{% endif %}
 {% endfor %}
 </div>
 
 <br><br><h4>Rejected</h4> <br>
 <div class="row">
-{% for issue_request in issue_requests_student %}
-{% if issue_request.issue_request_status == 'rejected' %}
+{% for issue_request in rejected_requests %}
 <div class="col-md-3">
 <ul class="list-group">
 <article class="full content-section">
@@ -76,14 +69,12 @@ rejected with note: <br>
 </article>
 </ul>
 </div>
-{%endif%}
 {%endfor%}
 </div>
 
 <br><br><h4>Returned</h4> <br>
 <div class="row">
-{% for issue_request in issue_requests_student %}
-{% if issue_request.issue_request_status == 'returned' %}
+{% for issue_request in returned_requests %}
 <div class="col-md-4">
 <ul class="list-group">
 <article class="full content-section">
@@ -91,18 +82,19 @@ rejected with note: <br>
 <div>Was issued on: {{ issue_request.issued_on }}</div>
 <div>Was Requested until: {{ issue_request.return_on }}</div>
 {% if not issue_request.renewed_on <= issue_request.issued_on %}
-<div>Was also Renewed on: {{ issue_request.renewed_on }}</div>
+    <div>Was also Renewed on: {{ issue_request.renewed_on }}</div>
 {%endif%}
 <div>Was Returned on: {{ issue_request.returned_on }}</div>
-    {% if issue_request.score %}
-<div>Scored: {{ issue_request.score }} out of 100</div>
-    {% else %}
+{% if issue_request.score %}
+    <div>Scored: {{ issue_request.score }} out of 100</div>
+{% else %}
 <div>Not Yet Scored</div>
     {% endif %}
+<div>rated: {{ issue_request.rating }} out of 5 </div>
+<div>reviewed: {{ issue_request.review }} </div>
 </article>
 </ul>
 </div>
-{%endif%}
 {%endfor%}
 
 </div>

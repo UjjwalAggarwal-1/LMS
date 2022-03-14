@@ -1,14 +1,14 @@
+from PIL import Image
+from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.contrib.auth.models import User
-from PIL import Image
 
 from all_books.models import Issue
 
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bits_id = models.CharField(max_length=16, default='null')
+    bits_id = models.CharField(max_length=16, default='null', verbose_name='BITS ID')
     mobile_num = models.PositiveIntegerField(max_length=15, verbose_name="Mobile/Contact number", validators=[
             MaxValueValidator(10), MinValueValidator(10)])
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')

@@ -1,6 +1,7 @@
 {% extends "all_books/base.html" %}
 
 {% block content %}{% if user.profile.librarian %}{% load crispy_forms_tags %}
+<h4>Add a New Book</h4>
 <form method="post" >
     {% csrf_token %}
     {{ form|crispy }}
