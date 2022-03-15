@@ -23,7 +23,7 @@ class Book(models.Model):
     publisher = models.CharField(max_length=50)
     genre = models.ManyToManyField(Genre)
     location = models.CharField(max_length=20, default='unknown')
-    displayed_from = models.DateTimeField(blank=True, null=True, default=datetime.datetime.now())
+    displayed_from = models.DateTimeField(blank=True, null=True, default=timezone.now())
     availability = models.ManyToManyField(User, through='Issue')
     quantity = models.PositiveIntegerField()
     published = models.DateField(default=datetime.date.today())
