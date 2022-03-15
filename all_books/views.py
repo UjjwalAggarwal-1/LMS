@@ -39,6 +39,7 @@ class BookListView(ListView):
     template_name = 'all_books/home.html'
     context_object_name = 'books'
     ordering = ['-displayed_from']
+    paginate_by = 5
 
 
 def about(request):
