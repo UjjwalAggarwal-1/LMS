@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView, DeleteView
-
+from django.http import HttpResponseRedirect
 from .forms import AddBookForm, RejectRequestForm, RequestBookForm, RenewBookForm, ReturnBookForm, UpdateBookForm
 from .models import Book, Issue, Genre
 
@@ -20,9 +20,8 @@ def add_book(request):
                 messages.success(request, 'added successfully')
                 return redirect('librarian_controls')
             elif Book.objects.filter(isbn=request.POST.get('isbn')):
-                form = AddBookForm()
                 messages.warning(request, 'a book with same isbn was previously added')
-                return render(request, 'all_books/add_book.html', {'form': form, 'title': 'ADD BOOK'})
+                return HttpResponseRedirect(request.path)
     else:
         form = AddBookForm()
         return render(request, 'all_books/add_book.html', {'form': form, 'title': 'ADD BOOK'})
