@@ -208,7 +208,7 @@ def search(request):
         context = {
             'book_objs_title': Book.objects.filter(title__icontains=query),
             'book_objs_author': Book.objects.filter(author__icontains=query),
-            'book_objs_isbn': Book.objects.filter(isbn__icontains=query),
+            'book_objs_isbn': Book.objects.filter(isbn=query),
             'query': query,
         }
     return render(request, 'all_books/search_results.html', context)
