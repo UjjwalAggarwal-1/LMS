@@ -11,4 +11,4 @@ class StuProfileUpdateForm(forms.ModelForm):
 class LibProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['mobile_num', 'image']
+        fields = ['mobile_num']  # , 'image']
