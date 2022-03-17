@@ -2,4 +2,4 @@
 *.sqlite3
 *.pyc
 /media
-keys
+/keys.py
