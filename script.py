@@ -19,35 +19,23 @@ for row in range(1, n_rows):
         title='d', isbn=0, author='d', publisher='d', location='d', quantity=0, summary='d'
     )
     for col in range(n_cols):
-        data = worksheet.cell_value(row, col)
-        if col == 0:
-            new_book.isbn = data
-        elif col == 1:
-            new_book.title = data
-        elif col == 2:
-            genre_list = data.split(", ")
-            for genre in genre_list:
-                genre = Genre.objects.get_or_create(name__iexact=genre)
-                genre = genre[0].id
-                new_book.genre.add(genre)
-        elif col == 3:
-            new_book.author = data
-        elif col == 4:
-            new_book.publisher = data
-        elif col == 5:
-            data = xlrd.xldate_as_tuple(data, workbook.datemode)
-            data = datetime.datetime(*data)
-            new_book.published = data
-        elif col == 6:
-            data = xlrd.xldate_as_tuple(data, workbook.datemode)
-            data = datetime.datetime(*data)
-            new_book.displayed_from = data
-        elif col == 7:
-            new_book.location = data
-        elif col == 8:
-            new_book.quantity = data
-        elif col == 9:
-            new_book.summary = data
+        new_book.isbn = worksheet.cell_value(row, 0)
+        new_book.title = worksheet.cell_value(row, 1)
+        #  genre at bottom
+        new_book.author = worksheet.cell_value(row, 3)
+        new_book.publisher = worksheet.cell_value(row, 4)
+        new_book.published = datetime.datetime(*(xlrd.xldate_as_tuple(worksheet.cell_value(row, 5), workbook.datemode)))
+        new_book.displayed_from = datetime.datetime(*(xlrd.xldate_as_tuple(worksheet.cell_value(row, 6), workbook.datemode)))
+        new_book.location = worksheet.cell_value(row, 7)
+        new_book.quantity = worksheet.cell_value(row, 8)
+        new_book.summary = worksheet.cell_value(row, 9)
+        #  for genre
+        genre_list = (worksheet.cell_value(row, 2)).split(", ")
+        for genre in genre_list:
+            genre = Genre.objects.get_or_create(name__iexact=genre)
+            genre = genre[0].id
+            new_book.genre.add(genre)
+
         new_book.save()
 
 

@@ -9,7 +9,7 @@ requested by: {{ object.student.username }}, current merit score: {{object.stude
 <br>
 requested till: {{ object.return_on }}
 <br>
-{% if object.issue_request_status == "renewed" %}
+{% if object.status == "renewed" %}
     was previously issued on {{ object.issued_on }}
 {% endif %}
 

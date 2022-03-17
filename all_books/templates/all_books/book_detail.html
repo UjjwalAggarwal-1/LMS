@@ -32,11 +32,19 @@
 <br>
 <h6>Reviews:</h6>
 <br>
-{% if not issue_objects %}
+{% if not issue_object %}
 no reviews yet
 {% endif %}
 {% for issue in issue_object %}
-<p>{{issue.student}}, rating it a {{issue.rating}} out of 5, writes that <br> <i>{{ issue.review }} </i></p>
+{% if issue.review or issue.rating != 0  %}
+<p>{{issue.student}},
+    {% if issue.rating != 0 %}
+        rating it a {{issue.rating}} out of 5,
+    {% endif %}
+    {% if issue.review %}
+        writes that <br> <i>{{ issue.review }} </i>
+    {% endif %}</p>
+{% endif %}
 {% endfor %}
 
 {% else %}
