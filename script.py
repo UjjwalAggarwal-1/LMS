@@ -8,7 +8,8 @@ django.setup()
 
 from all_books.models import Book, Genre
 
-path = 'C:\\Users\\HP\\Desktop\\Book1.xls'
+file_name = 'Book1.xls'
+path = os.path.join(os.getcwd(), file_name)
 workbook = xlrd.open_workbook(path)
 worksheet = workbook.sheet_by_index(0)
 n_rows = worksheet.nrows
