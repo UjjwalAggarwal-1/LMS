@@ -37,8 +37,3 @@ for row in range(1, n_rows):
             new_book.genre.add(genre)
 
         new_book.save()
-
-
-
-
-
