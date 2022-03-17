@@ -27,7 +27,7 @@ class Book(models.Model):
     availability = models.ManyToManyField(User, through='Issue')
     quantity = models.PositiveIntegerField()
     published = models.DateField(default=datetime.date.today())
-    summary = models.CharField(max_length=500)
+    summary = models.TextField(max_length=500)
 
     @property
     def num_issues(self):
