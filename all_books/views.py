@@ -84,12 +84,12 @@ def book_request(request, pk):
 
 
 def issue_requests_student(request):  # personal requests of the student!
-    io = Issue.objects
-    context = {'pending_requests': io.filter(issue_request_status='pending').order_by('-requested_on', 'issued_on'),
-               'issued_requests': io.filter(issue_request_status='issued').order_by('return_on', 'issued_on'),
-               'returned_requests': io.filter(issue_request_status='returned').order_by('-returned_on', 'issued_on'),
-               'rejected_requests': io.filter(issue_request_status='rejected').order_by('-requested_on'),
-               'renewed_requests': io.filter(issue_request_status='renewed').order_by('-renewed_on', 'issued_on')}
+    io = Issue.objects.filter(student=request.user)
+    context = {'pending_requests': io.filter(status='pending').order_by('-requested_on', 'issued_on'),
+               'issued_requests': io.filter(status='issued').order_by('return_on', 'issued_on'),
+               'returned_requests': io.filter(status='returned').order_by('-returned_on', 'issued_on'),
+               'rejected_requests': io.filter(status='rejected').order_by('-requested_on'),
+               'renewed_requests': io.filter(status='renewed').order_by('-renewed_on', 'issued_on')}
     return render(request, 'all_books/issue_requests_student.html', context)
 
 
@@ -99,11 +99,11 @@ class DeleteMyRequest(DeleteView):
     success_url = reverse_lazy('issue_requests_student')
 
 
-def all_request_listview(request):  # for librarians' page for viewing requests
-    context_object = Issue.objects.all()
-    context = {'all_issue_requests': context_object}
-
-    return render(request, 'all_books/librarian_controls.html', context)
+# def all_request_listview(request):  # for librarians' page for viewing requests --- shifted to librarian_controls above
+#     context_object = Issue.objects.all()
+#     context = {'all_issue_requests': context_object}
+#
+#     return render(request, 'all_books/librarian_controls.html', context)
 
 
 def request_decision(request, issue_request_id):
@@ -116,13 +116,13 @@ def request_decision(request, issue_request_id):
         iss_obj.status = 'issued'
         iss_obj.issued_on = datetime.datetime.now()
         reqbook.quantity -= 1
-        iss_obj.save()
         reqbook.save()
+        iss_obj.save()
         return redirect('librarian_controls')
 
     context = {'object': Issue.objects.get(id=issue_request_id),
                'studiss': Issue.objects.filter(student=reqstudent, book=reqbook,
-                                               issue_request_status='issued').count()}
+                                               status='issued').count()}
 
     return render(request, 'all_books/request_decision.html', context)
 

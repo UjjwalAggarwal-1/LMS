@@ -90,8 +90,16 @@ rejected with note: <br>
 {% else %}
 <div>Not Yet Scored</div>
     {% endif %}
-<div>rated: {{ issue_request.rating }} out of 5 </div>
-<div>reviewed: {{ issue_request.review }} </div>
+{% if issue_request.rating != 0 %}
+    <div>Rating: {{ issue_request.rating }} out of 5</div>
+{% else %}
+<div>Not Yet Rated</div>
+    {% endif %}
+{% if issue_request.review %}
+    <div>Review: {{ issue_request.review }}</div>
+{% else %}
+<div>Not Yet reviewed</div>
+    {% endif %}
 </article>
 </ul>
 </div>

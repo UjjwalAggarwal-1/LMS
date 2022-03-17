@@ -50,7 +50,7 @@ class RejectRequestForm(forms.Form):
 
 
 class RenewRequestDecisionForm(forms.Form):
-    issue_request_status = forms.ChoiceField(choices=[
+    status = forms.ChoiceField(choices=[
         ('renewed', 'Renew Request'), ('rejected', 'Reject')
     ])
     reject_request = forms.CharField(max_length=300, required=False)
