@@ -25,7 +25,7 @@ def student_profile(request):
 @login_required
 def librarian_profile(request):
     if request.method == 'POST':
-        p_form = LibProfileUpdateForm(request.POST, instance=request.user.profile)  # if image field in form then add request.FILES
+        p_form = LibProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
         if p_form.is_valid():
             mobile_num = p_form.cleaned_data.get('mobile_num')
             if math.floor(math.log10(mobile_num)+1) == 10:
