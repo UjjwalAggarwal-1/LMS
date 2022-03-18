@@ -8,7 +8,7 @@ from all_books.models import Issue
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bits_id = models.CharField(max_length=16, default='null', verbose_name='BITS ID')
-    mobile_num = models.IntegerField(default='0', verbose_name="Mobile/Contact number")
+    mobile_num = models.BigIntegerField(default='0', verbose_name="Mobile/Contact number")
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
     librarian = models.BooleanField(null=False, default=False)
     hostel = models.CharField(max_length=25, choices=
