@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView
-from django.views.generic.edit import UpdateView, DeleteView
+from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.http import HttpResponseRedirect
 from .forms import AddBookForm, RejectRequestForm, RequestBookForm, RenewBookForm, ReturnBookForm, UpdateBookForm
 from .models import Book, Issue, Genre
@@ -270,3 +270,9 @@ def more_search(request):
 
     return render(request, 'all_books/more_search.html', context)
 
+
+class AddGenre(CreateView):
+    model = Genre
+    template_name = 'all_books/add_genre.html'
+    fields = ['name']
+    success_url = 'librarian_controls'
