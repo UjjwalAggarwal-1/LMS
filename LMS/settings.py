@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 import django_heroku
-import keyconfig as asdfgh
+import LMS.keyconfig as asdfgh
 
 # from keys import email_password
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
