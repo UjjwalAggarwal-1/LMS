@@ -1,5 +1,4 @@
 .DS_Store
 *.sqlite3
 *.pyc
-/media
 /keys.py
