@@ -1,7 +1,7 @@
 {% extends "all_books/base.html" %}
 {%block content%}
   <a class="btn btn-outline-info" href="{% url 'add_genre' %}">ADD GENRE</a>
-
+<br>
 {% for g in genre %}
 <article class="media content-section">
     <div class="media-body">
