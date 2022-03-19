@@ -1,5 +1,5 @@
 git add -A
-git commit -m "minor feature updates"
+git commit -m "site id set"
 git push origin main
 git push heroku main
 heroku open
