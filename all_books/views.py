@@ -22,6 +22,9 @@ def add_book(request):
             elif Book.objects.filter(isbn=request.POST.get('isbn')):
                 messages.warning(request, 'a book with same isbn was previously added')
                 return HttpResponseRedirect(request.path)
+        else:
+            messages.warning(request, 'invalid data')
+            return HttpResponseRedirect(request.path)
     else:
         form = AddBookForm()
         return render(request, 'all_books/add_book.html', {'form': form, 'title': 'ADD BOOK'})
@@ -78,6 +81,9 @@ def book_request(request, pk):
             issue_inst = Issue.objects.create(book=book_object, student=student_object, return_on=return_on)
             messages.success(request, 'book was requested, please wait for approval')
             return redirect('all_books_home')
+        else:
+            messages.warning(request, 'invalid request')
+            return HttpResponseRedirect(request.path)
     else:
         form = RequestBookForm(initial={'return_on': datetime.datetime.now() + datetime.timedelta(days=20)})
     return render(request, 'all_books/request_book.html', {'form': form})
@@ -111,7 +117,6 @@ def request_decision(request, issue_request_id):
     reqstudent = Issue.objects.get(id=issue_request_id).student
 
     if request.method == 'POST':
-
         iss_obj = Issue.objects.get(id=issue_request_id)
         iss_obj.status = 'issued'
         iss_obj.issued_on = datetime.datetime.now()
@@ -119,6 +124,7 @@ def request_decision(request, issue_request_id):
         reqbook.save()
         iss_obj.save()
         return redirect('librarian_controls')
+    else:
 
     context = {'object': Issue.objects.get(id=issue_request_id),
                'studiss': Issue.objects.filter(student=reqstudent, book=reqbook,
