@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 import django_heroku
-# import keyconfig as asdfgh
+import keyconfig as asdfgh
 
 # from keys import email_password
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -12,11 +12,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '51e12248adfe603dc187537af31318feacee8c39dc557a9b'
+SECRET_KEY = asdfgh.SECRET_KEY
 #SECRET_KEY = 'django-insecure-0w54ucwxluvtpmyhy_bjenq9rezw9@t9o2nnj)pn^2r!o@-@1i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['lms-on-django.herokuapp.com']
 
@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    #'all_books',  #facing some duplicate error
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -159,8 +158,8 @@ LOGIN_URL = 'login'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = '12aujjwalbis.aggarwal@gmail.com'
-EMAIL_HOST_PASSWORD = 'kllhvckikzjbqjgk'
+EMAIL_HOST_USER = asdfgh.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = asdfgh.EMAIL_HOST_PASSWORD
 EMAIL_USE_TLS = True
 
 django_heroku.settings(locals())
