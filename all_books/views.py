@@ -275,3 +275,4 @@ class AddGenre(CreateView):
     model = Genre
     template_name = 'all_books/add_genre.html'
     fields = ['name']
+    success_url = reverse_lazy('librarian_controls')
