@@ -276,3 +276,16 @@ class AddGenre(CreateView):
     template_name = 'all_books/add_genre.html'
     fields = ['name']
     success_url = reverse_lazy('librarian_controls')
+
+
+class AllGenre(ListView):
+    model = Genre
+    template_name = 'all_books/all_genre.html'
+    context_object_name = 'genre'
+    paginate_by = 8
+
+
+class DeleteGenre(DeleteView):
+    model = Genre
+    template_name = 'all_books/delete_book.html'
+    success_url = reverse_lazy('librarian_controls')
