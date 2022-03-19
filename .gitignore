@@ -2,4 +2,4 @@
 *.sqlite3
 *.pyc
 /keys.py
-keyconfig.py
+/LMS/keyconfig.py
