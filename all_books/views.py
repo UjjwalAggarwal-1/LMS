@@ -124,7 +124,6 @@ def request_decision(request, issue_request_id):
         reqbook.save()
         iss_obj.save()
         return redirect('librarian_controls')
-    else:
 
     context = {'object': Issue.objects.get(id=issue_request_id),
                'studiss': Issue.objects.filter(student=reqstudent, book=reqbook,
