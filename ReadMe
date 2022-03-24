@@ -1,14 +1,31 @@
 LMS, the website;
 built using django framework.
 LMS is short for 'library management system'. This web app, as the name suggests, is built as an online management means
-for an organisation to maintain the records of the books, the book issue requests and related due dates and renewals for
-a library. This was built as a project while learning django through the official documentation and the youtube chanel of
-@Corey Schafer (https://www.youtube.com/c/Coreyms).
+for an organisation(built keeping in mind own academic institute) as the  to maintain the records of the books, the book
+issue requests and related due dates and renewals for a library. This was built as a project while learning django through
+the official documentation and the youtube chanel of @Corey Schafer (https://www.youtube.com/c/Coreyms).
 This project was build in a total duration of 2 months, which is including the time off due to pursued academics, and
-finally deployed on 17th March, 2022 using the service provided by heroku.
+finally deployed on 17th March, 2022 using the free service provided by heroku.
 
 The website can be visited on "https://lms-on-django.herokuapp.com/"
 
+Features:
+
+The "cover-page" consists of a section of trending books and one section of new arrivals.
+You may login and continue or continue without a login to the "catalogue" page. If not signed in, then you can only view
+the books in the library and their details; logged in as a Student you will see an additional option to place a request to
+"issue" the book. Students will be able to login(see remarks) using google account login and the librarians may login
+through the django login system.
+A page for all issue requests of the student can be accessed through the nav-bar and a profile page is also accessible.
+In the requests section, sections are made for pending, issued, renewal-pending, rejected, returned requests of the student
+and can opt to renew the issued book.
+The profile page has options tailored to a hostel student in the institute, includes update-info functionality.
+For the librarians, the page they see after cover is the "controls" page; with options like
+-> adding a new book
+-> update/ view/ delete an existing book
+-> add a new genre type( this appears as checkbox when adding/ updating a book)
+-> update/ view/ delete an existing genre
+-> reject(provide reason too) or accept the issue requests(new or renewal)
 
 Remarks:
 
@@ -16,3 +33,5 @@ Some users face issue logging in with their google account, as the website is no
 Google account login. Using an alternative browser, like Brave browser for instance seems to not give the same issue as of
 now. Might not look into the matter for now because of the issue not being a major concern to me for the moment, I currently
 do not look forward to have a large scale implementation.
+
+The student profile need not include update functionality, if data can be verified through institute's database.
