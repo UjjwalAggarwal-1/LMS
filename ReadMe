@@ -16,6 +16,7 @@ You may login and continue or continue without a login to the "catalogue" page. 
 the books in the library and their details; logged in as a Student you will see an additional option to place a request to
 "issue" the book. Students will be able to login(see remarks) using google account login and the librarians may login
 through the django login system.
+Only the admin can assign role of librarian to users.
 A page for all issue requests of the student can be accessed through the nav-bar and a profile page is also accessible.
 In the requests section, sections are made for pending, issued, renewal-pending, rejected, returned requests of the student
 and can opt to renew the issued book.
@@ -26,6 +27,9 @@ For the librarians, the page they see after cover is the "controls" page; with o
 -> add a new genre type( this appears as checkbox when adding/ updating a book)
 -> update/ view/ delete an existing genre
 -> reject(provide reason too) or accept the issue requests(new or renewal)
+There is also a search bar in the navigation bar, searching anything will take you to the results page and this page has an
+option for more detailed search wherein you have some options to filter searches based on title, author, availability to issue,
+etc, or arrange in a specified order as per the options available.
 
 Remarks:
 
