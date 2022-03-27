@@ -25,6 +25,7 @@ For the librarians, the page they see after cover is the "controls" page; with o
 -> add a new genre type( this appears as checkbox when adding/ updating a book)
 -> update/ view/ delete an existing genre
 -> reject(provide reason too) or accept the issue requests(new or renewal)
+-> user receives an email verifying the issue approval for requested book
 There is also a search bar in the navigation bar, searching anything will take you to the results page and this page has an
 option for more detailed search wherein you have some options to filter searches based on title, author, availability to issue,
 etc, or arrange in a specified order as per the options available.
