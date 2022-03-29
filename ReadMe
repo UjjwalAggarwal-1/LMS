@@ -1,9 +1,10 @@
-LMS, the website;
+L.M.S., the website;
 built using django framework.
 LMS is short for 'library management system'. This web app, as the name suggests, is built as an online management means 
 for an organisation(built keeping in mind own academic institute) as the  to maintain the records of the books, the book 
 issue requests and related due dates and renewals for a library. This was built as a project while learning django through
 the official documentation and the youtube chanel of @Corey Schafer (https://www.youtube.com/c/Coreyms).
+
 This project was build in a total duration of 2 months, which is including the time off due to pursued academics, and
 finally deployed on 17th March, 2022 using the free service provided by heroku.
 
@@ -14,7 +15,7 @@ Features:
 The "cover-page" consists of a section of trending books and one section of new arrivals.
 You may login and continue or continue without a login to the "catalogue" page. If not signed in, then you can only view
 the books in the library and their details; logged in as a Student you will see an additional option to place a request to
-"issue" the book. Students will be able to login(see remarks) using google account login and the librarians may login
+"issue" the book. Students will be able to login *(see remarks) using google account login and the librarians may login
 through the django login system.
 Only the admin can assign role of librarian to users.
 A page for all issue requests of the student can be accessed through the nav-bar and a profile page is also accessible.
@@ -34,9 +35,9 @@ etc, or arrange in a specified order as per the options available.
 
 Remarks:
 
-Some users face issue logging in with their google account, as the website is not authenticated by Google, but implements
-Google account login. Using an alternative browser, like Brave browser for instance seems to not give the same issue as of
-now. Might not look into the matter for now because of the issue not being a major concern to me for the moment, I currently
-do not look forward to have a large scale implementation.
+Some users face issue when logging in with their google account, as the website is not authenticated by Google but implements
+Google account login. Using an alternative browser, like Brave browser for instance seems to not give rise to the same issue for them
+as of now. Might not look into the matter for now because of the issue not being a major concern to the functionality at the moment, and
+I currently do not look forward to have a large scale implementation.
 
-The student profile need not include update functionality, if data can be verified through institute's database.
+The student profile need not include update functionality, if data can be obtained through institute's database.
