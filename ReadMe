@@ -1,5 +1,4 @@
-L.M.S., the website;
-built using django framework.
+L.M.S., the web-app, built using django framework.
 LMS is short for 'library management system'. This web app, as the name suggests, is built as an online management means 
 for an organisation(built keeping in mind own academic institute) as the  to maintain the records of the books, the book 
 issue requests and related due dates and renewals for a library. This was built as a project while learning django through
