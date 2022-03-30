@@ -16,7 +16,7 @@ worksheet = workbook.sheet_by_index(0)
 n_rows = worksheet.nrows
 n_cols = worksheet.ncols
 
-for row in range(1, n_rows):
+for row in range(1, n_rows+1):
     new_book = Book.objects.create(
         title='d', isbn=0, author='d', publisher='d', location='d', quantity=0, summary='d'
     )
