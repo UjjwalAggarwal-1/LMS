@@ -18,7 +18,7 @@ n_cols = worksheet.ncols
 
 for row in range(1, n_rows+1):
     new_book = Book.objects.create(
-        title='d', isbn=0, author='d', publisher='d', location='d', quantity=0, summary='d'
+        title='default_cell', isbn=0, author='default_cell', publisher='default_cell', location='default_cell', quantity=0, summary='default_cell'
     )
     for col in range(n_cols):
         new_book.isbn = worksheet.cell_value(row, 0)
