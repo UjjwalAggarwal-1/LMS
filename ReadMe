@@ -4,7 +4,7 @@ for an organisation(built keeping in mind own academic institute) as the  to mai
 issue requests and related due dates and renewals for a library. This was built as a project while learning django through
 the official documentation and the youtube chanel of @Corey Schafer (https://www.youtube.com/c/Coreyms).
 
-This project was build in a total duration of 2 months, which is including the time off due to pursued academics, and
+This project was build in a total duration of 1 month, which is including the time off due to pursued academics, and
 finally deployed on 17th March, 2022 using the free service provided by heroku.
 
 The website can be visited on "https://lms-on-django.herokuapp.com/"
