@@ -154,6 +154,7 @@ LOGIN_REDIRECT_URL = 'login_then?'
 
 LOGOUT_REDIRECT_URL = ''
 LOGIN_URL = 'login'
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
