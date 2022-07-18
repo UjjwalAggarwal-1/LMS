@@ -1,3 +1,5 @@
+![Jokes Card](https://readme-jokes.vercel.app/api)
+
 L.M.S., the web-app, built using django framework.
 LMS is short for 'library management system'. This web app, as the name suggests, is built as an online management means 
 for an organisation(built keeping in mind own academic institute) as the  to maintain the records of the books, the book 
