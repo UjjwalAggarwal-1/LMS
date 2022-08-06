@@ -1,6 +1,5 @@
 .DS_Store
 *.sqlite3
 *.pyc
-/LMS/keyconfig.py
 /media
 /Book1.xls
