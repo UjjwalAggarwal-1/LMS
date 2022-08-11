@@ -1,4 +1,4 @@
-LMS, the website;
+# LMS, the website;
 built using django framework.
 LMS is short for 'library management system'. This web app, as the name suggests, is built as an online management means
 for an organisation(built keeping in mind own academic institute) as the  to maintain the records of the books, the book
@@ -32,7 +32,7 @@ There is also a search bar in the navigation bar, searching anything will take y
 option for more detailed search wherein you have some options to filter searches based on title, author, availability to issue,
 etc, or arrange in a specified order as per the options available.
 
-Remarks:
+# Remarks:
 
 Some users face issue when logging in with their google account, as the website is not authenticated by Google but implements
 Google account login. Using an alternative browser, like Brave browser for instance seems to not give rise to the same issue for them
@@ -40,3 +40,5 @@ as of now. Might not look into the matter for now because of the issue not being
 I currently do not look forward to have a large scale implementation.
 
 The student profile need not include update functionality, if data can be obtained through institute's database.
+
+# Key Features:
