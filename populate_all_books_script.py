@@ -1,4 +1,3 @@
-<<<<<<< HEAD:script.py
 import os
 import xlrd
 import datetime
