@@ -1,0 +1,56 @@
+1.Download and install Python for Windows. Confirm python was added to your path and that you can run either the command python or python3 from your Git command line. (I recommend Git Bash.) In my case, my executable name is python.
+
+#I got this message:
+
+Requirement already satisfied: git-filter-repo in c:\users\username\appdata\local\packages\pythonsoftwarefoundation.python.3.10_qbz5n2kfra8p0\localcache\local-packages\python310\site-packages
+
+2.Now copy that folder but replace site-packages with scripts c:\users\username\appdata\local\packages\pythonsoftwarefoundation.python.3.10_qbz5n2kfra8p0\localcache\local-packages\python310\scripts
+
+# You will find git-filter-repo.exe inside the scripts folder.
+
+3. Run git --exec-path
+
+# You will get
+
+C:/Program Files/Git/mingw64/libexec/git-core
+
+4.Copy git-filter-repo.exe to a folder in step 3 (C:/Program Files/Git/mingw64/libexec/git-core).
+
+5. install git filter repo thingy
+
+brew install git-filter-repo
+pip install git-filter-repo
+or whatever
+
+6.If you don't already have a local copy of your repository with sensitive data in its history, clone the repository to your local computer.
+
+7.Navigate into the repository's working directory.
+
+cd YOUR-REPOSITORY
+
+8. Use the following command, replacing PATH-TO-YOUR-FILE-WITH-SENSITIVE-DATA with the path to the file you want to remove, not just its filename
+git filter-repo --invert-paths --path PATH-TO-YOUR-FILE-WITH-SENSITIVE-DATA
+
+ These arguments will:
+
+-Force Git to process, but not check out, the entire history of every branch and tag
+-Remove the specified file, as well as any empty commits generated as a result
+-Remove some configurations, such as the remote URL, stored in the .git/config file. You may want to back up this file in advance for restoration later.
+-Overwrite your existing tags
+
+Note: If the file with sensitive data used to exist at any other paths (because it was moved or renamed), you must run this command on those paths, as well.
+
+9. echo "YOUR-FILE-WITH-SENSITIVE-DATA" >> .gitignore
+
+10. Double-check that you've removed everything you wanted to from your repository's history, and that all of your branches are checked out.
+
+11. Once you're happy with the state of your repository, force-push your local changes to overwrite your repository on GitHub.com, as well as all the branches you've pushed up. A force push is required to remove sensitive data from your commit history.
+
+git push origin --force --all
+
+12. In case you have repo access bt:
+
+git remote remove origin
+git remote add origin https://github.com/username/repository
+
+13. In case you have to go for the authentication, you have to generate the token from settings > developer tools
