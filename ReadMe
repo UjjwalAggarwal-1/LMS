@@ -34,11 +34,6 @@ etc, or arrange in a specified order as per the options available.
 
 # Remarks:
 
-Some users face issue when logging in with their google account, as the website is not authenticated by Google but implements
-Google account login. Using an alternative browser, like Brave browser for instance seems to not give rise to the same issue for them
-as of now. Might not look into the matter for now because of the issue not being a major concern to the functionality at the moment, and
-I currently do not look forward to have a large scale implementation.
-
 The student profile need not include update functionality, if data can be obtained through institute's database.
 
 # Key Features:
